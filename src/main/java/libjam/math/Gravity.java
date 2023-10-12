@@ -5,6 +5,21 @@ public class Gravity {
     public static final double G_EARTH = 9.81;
 
 
+
+
+    public static double getDistanceTravelled(double velocity) {
+        return (Math.pow(velocity, 2)) / (2 * G_EARTH);
+    }
+
+    public static double getVelocityAtTime(double time) {
+        return G_EARTH * time;
+    }
+
+    public static double getDistanceAtTime(double time) {
+        return G_EARTH * (Math.pow(time, 2)) / 2d;
+    }
+
+
     /**
      * Returns the distance travelled of the object for which terminalVelocity applies after "duration" seconds
      * of free fall.
@@ -21,7 +36,7 @@ public class Gravity {
         double gravity
     ) {
 
-        return  (Math.pow(terminalVelocity, 2) / gravity)
+        return (Math.pow(terminalVelocity, 2) / gravity)
                 * Math.log(Math.cosh((gravity * duration) / terminalVelocity));
     }
 

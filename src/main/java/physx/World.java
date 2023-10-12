@@ -1,10 +1,10 @@
 package physx;
 
-import math.Vector;
+import libjam.math.Gravity;
+import libjam.math.Vector;
 import physx.event.WorldChangeListener;
 import physx.event.WorldEvent;
 import physx.event.WorldObjectEnterEvent;
-import util.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ public class World {
      * @param width The width for this world.
      * @param height The height for this world.
      */
-    public World(final int width, final int height, int worldScale) {
+    public World(final int width, final int height, double worldScale) {
         this.worldScale = worldScale;
         this.width = width;
         this.height = height;
@@ -105,57 +105,89 @@ public class World {
 
     private long startedAt = 0;
 
+    public double getWorldScale() {
+        return worldScale;
+    }
+
+    public double startY = 200;
+
+    public double frac = 1;
+
+
     /**
      *
      */
     public synchronized void syncObjects() {
 
-        long now =  System.currentTimeMillis();
+        if (startedAt == 0) {
+            startedAt = System.currentTimeMillis();
+        }
 
-        long diffToPreviousInvocation = lastUpdate == 0 ? 0 : now - lastUpdate;
+        long now = System.currentTimeMillis();
 
-        // in m/s²
-        double acceleration = 9.81 * worldScale;
+        double secondsSinceFirstImpulse = (now - startedAt) / 1000d;
 
-        double factor = (diffToPreviousInvocation/1000d);
+        double yDistance = startY;
 
-        Logger.log("" + factor);
+        double yVelocity = 0;
 
-        double yDistance = 0;
+        Vector vY;
 
-        double yVelocity;
-        double fallingSince;
+
+
 
         for (WorldObject obj: worldObjects) {
 
-            Vector v = obj.getVector();
-
-            if (v.equals(Vector.NULL_VECTOR)) {
-                return;
-            }
+            vY = obj.getYVector();
 
             // update velocity according to v = v_0 + g*t (v_0 = initial speed, g = gravity, t = fall time)
-            yVelocity = v.getAt(1) + (factor) * acceleration;
-            v.setAt(1, yVelocity);
 
-            fallingSince = yVelocity / acceleration;
 
-            yDistance = (acceleration * (fallingSince * fallingSince)) / 2d;
+            if (vY.getAt(1) > 0) {
+                yVelocity = Gravity.getVelocityAtTime(secondsSinceFirstImpulse);
+                yDistance = startY + Gravity.getDistanceTravelled(yVelocity);
+                vY.setAt(1, yVelocity);
+            } else if (vY.getAt(1) < 0) {
+              //  yDistance = obj.getY() + vY.getAt(1);
+              //  vY.setAt(1,  vY.getAt(1) - frac);
 
-            Logger.log("Factor: " + factor + "; Time (seconds):" + (((fallingSince))) + "; velocity: " + v.getAt(1) + "; meters travelled: " + (yDistance / worldScale) + "; pixels travelled: " + (yDistance));
 
-            if (obj.getY() + yDistance >= getHeight()) {
+               // vY.setAt(1, -1-Gravity.getVelocityAtTime(secondsSinceFirstImpulse));
+
+                System.out.println(frac + Gravity.getVelocityAtTime(secondsSinceFirstImpulse));
+                vY.setAt(1, frac + Gravity.getVelocityAtTime(secondsSinceFirstImpulse));
+                yDistance = getHeight() +
+                        Math.min(
+                                -1, (
+                        frac * secondsSinceFirstImpulse + Gravity.getDistanceAtTime(secondsSinceFirstImpulse)
+                ));// Gravity.getDistanceTravelled(vY.getAt(1));
+
+            }
+
+
+
+            // Logger.log("Factor: " + factor + "; Time (seconds):" + (((fallingSince))) + "; velocity: " + vY.getAt(1) + "; meters travelled: " + (yDistance / worldScale) + "; pixels travelled: " + (yDistance));
+
+            if (yDistance + obj.getHeight() >= getHeight() && vY.getAt(1) > 0) {
 
                 obj.setY(getHeight() - obj.getHeight());
-                obj.setVector(Vector.from(0, 0));
-            } else {
-                obj.setY(obj.getY() + yDistance);
+                obj.setXVector(Vector.from(0, 0));
+                vY.setAt(0, 0);
+                frac = -yVelocity * obj.getElasticity();
+                vY.setAt(1, -yVelocity * obj.getElasticity());
+                startedAt = 0;
+                lastUpdate = 0;
+
+            } else if (yDistance != 0) {
+
+                obj.setY(yDistance);
+                lastUpdate = System.currentTimeMillis();
             }
 
 
         }
 
-        lastUpdate = System.currentTimeMillis();
+
     }
 
 

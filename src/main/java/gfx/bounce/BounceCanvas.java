@@ -1,6 +1,7 @@
 package gfx.bounce;
 
 
+import gfx.object.Level;
 import physx.World;
 import physx.WorldObject;
 import physx.event.WorldChangeListener;
@@ -69,7 +70,7 @@ final public class BounceCanvas extends Canvas implements Runnable, WorldChangeL
 
             end  = System.currentTimeMillis();
             fps = 1000 / (end - start);
-            Logger.log("" + (int)fps);
+          //  Logger.log("" + (int)fps);
         }
 
     }
@@ -100,8 +101,9 @@ final public class BounceCanvas extends Canvas implements Runnable, WorldChangeL
         gContext.setColor(Color.BLACK);
         gContext.fillRect(0, 0, this.getWidth(), this.getHeight());
 
+        ((Level) world).draw(gContext);
         for (WorldObject obj: world.getObjects()) {
-            obj.draw(gContext);
+            obj.draw(gContext, world.getWorldScale());
         }
 
         return true;

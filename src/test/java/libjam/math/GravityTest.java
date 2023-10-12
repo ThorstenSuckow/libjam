@@ -51,6 +51,13 @@ class GravityTest {
                 0.001
         );
 
+        v = Gravity.computeVelocityForDuration(40, terminalVelocity, Gravity.G_EARTH);
+        Assertions.assertEquals(
+                terminalVelocity,
+                new BigDecimal(v).setScale(2, RoundingMode.HALF_UP).doubleValue(),
+                0.001
+        );
+
     }
 
     @Test
@@ -72,12 +79,24 @@ class GravityTest {
         p = Gravity.computeVerticalDistanceTravelled(
                 12, terminalVelocity, Gravity.G_EARTH
         );
+        Assertions.assertEquals(
+                455.15,
+                new BigDecimal(p).setScale(21, RoundingMode.HALF_UP).doubleValue(),
+                0.1
+
+        );
+
+        p = Gravity.computeVerticalDistanceTravelled(
+                0.023, terminalVelocity, Gravity.G_EARTH
+        );
 
         Assertions.assertEquals(
                 455.15,
                 new BigDecimal(p).setScale(21, RoundingMode.HALF_UP).doubleValue(),
                 0.1
+
         );
+
     }
 
 
