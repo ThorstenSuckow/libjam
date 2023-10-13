@@ -5,88 +5,55 @@ public class Gravity {
     public static final double G_EARTH = 9.81;
 
 
-
-
-    public static double getDistanceTravelled(double velocity) {
-        return (Math.pow(velocity, 2)) / (2 * G_EARTH);
-    }
-
-    public static double getVelocityAtTime(double time) {
-        return G_EARTH * time;
-    }
-
-    public static double getDistanceAtTime(double time) {
-        return G_EARTH * (Math.pow(time, 2)) / 2d;
+    /**
+     * Returns the vertical distance of an object based on the parameters at a given point in time.
+     *
+     * @param time in seconds
+     * @param verticalVelocity The absolute value of the vertical movement vector. Positive value means an object
+     *                        moves upward, begative means the object travels downwards.
+     * @param height The height as the reference for computing the vertical distance.
+     *
+     * @return Returns the current vertical distance at this point in time, considering height.
+     * The value may be < 0. Calling methods have to take measures if the returned value does not fit into the
+     * frame of reference.
+     */
+    public static double getVerticalDistanceAtTime(double time, double verticalVelocity, double height) {
+        return height + (verticalVelocity * time) - (G_EARTH * Math.pow(time, 2) / 2d);
     }
 
 
     /**
-     * Returns the distance travelled of the object for which terminalVelocity applies after "duration" seconds
-     * of free fall.
+     * Returns the vertical velocity of an object at the specified time relative to the velocity
+     * and the initial launch angle alpha.
      *
-     * @param duration fall time in seconds
-     * @param terminalVelocity the terminalVelocity computed for the object (m/s)
-     * @param gravity Gravitational force (m / s²)
-     *
-     * @return vertical position (m)
+     * @param time in seconds
+     * @param alpha The initial launch angle of the object, relative to a perfect flat ground with 0 degrees..
+     * @param velocity The movement vector with V = V_x / cos(alpha) and V = V_y / sin(alpha)
+     * @return
      */
-    public static double computeVerticalDistanceTravelled(
-        double duration,
-        double terminalVelocity,
-        double gravity
-    ) {
+    public static double getVerticalVelocityAtTime(double time, double alpha, double velocity) {
 
-        return (Math.pow(terminalVelocity, 2) / gravity)
-                * Math.log(Math.cosh((gravity * duration) / terminalVelocity));
+        alpha = alpha % 360;
+
+        boolean upwards = (alpha >= 0 && alpha <= 180);
+
+        if (upwards && velocity < 0) {
+            throw new IllegalArgumentException(
+                    "With alpha=" + alpha + ", the initialVelocity must be positive (travelling upwards with positive velocity)."
+            );
+        }
+
+        if (!upwards && velocity > 0) {
+            throw new IllegalArgumentException(
+                    "With alpha=" + alpha + ", the initialVelocity must be negative (travelling downwards with negative velocity)."
+            );
+        }
+
+        double v = G_EARTH * time;
+
+        return velocity * Math.sin(Math.toRadians(alpha)) + (upwards ? -v : v);
     }
 
-
-    /**
-     * Returns the velocity of an object for which terminalVelocity applies after "duration" seconds
-     * of free fall.
-     *
-     * @param duration fall time in seconds
-     * @param terminalVelocity the terminalVelocity computed for the object (m/s)
-     * @param gravity Gravitational force (m / s²)
-     *
-     * @return speed (m/s)
-     */
-    public static double computeVelocityForDuration(
-            double duration,
-            double terminalVelocity,
-            double gravity
-    )
-    {
-        return terminalVelocity * Math.tanh(
-                (gravity * duration) / terminalVelocity
-        );
-    }
-
-
-    /**
-     * Returns the terminal speed in (m/s) of a body with the mass "mass" in a medium with the density "density",
-     * with the gravity-constant "G".
-     *
-     * @param mass mass of the body falling (kg)
-     * @param gravity Gravitational force (m / s²)
-     * @param density density of the medium the body travels through (kg / m³)
-     * @param dragForce the drag coefficient for the body (@see https://www.engineeringtoolbox.com/drag-coefficient-d_627.html)
-     * @param crossSectionalArea the cross-sectional area of the body (in m²)
-     *
-     * @return terminal speed in (m/s)
-     */
-     public static double computeTerminalSpeed(
-        double mass,
-        double gravity,
-        double density,
-        double dragForce,
-        double crossSectionalArea
-     ) {
-        return Math.sqrt(
-            (2 * mass * gravity) /
-            (density * dragForce  * crossSectionalArea)
-        );
-    }
 
 
 

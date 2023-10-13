@@ -4,100 +4,117 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-
 class GravityTest {
 
-    @Test
-    @DisplayName("computeTerminalSpeed")
-    void testTerminalSpeed()  {
-        DecimalFormat df = new DecimalFormat("####0.00");
 
-        double v = Gravity.computeTerminalSpeed(
-            80,
-                Gravity.G_EARTH,
-                1.2,
-                1,
-                0.3 * 1.8
-        );
-
-        Assertions.assertEquals(
-            new BigDecimal(v).setScale(2, RoundingMode.HALF_UP).doubleValue(),
-            49.22,
-                0.001
-        );
-    }
 
     @Test
-    @DisplayName("computeVelocityForDuration")
-    void testVelocityForDuration() {
+    @DisplayName("getVerticalVelocity")
+    void testGetVerticalVelocityAtTime() {
 
-        double terminalVelocity = 49.22;
 
-        double v = Gravity.computeVelocityForDuration(1, terminalVelocity, Gravity.G_EARTH);
+        double initialVelocity = 29;
+        double angle = 90;
+        double time = 0.1;
+        double expected = 28.019;
 
-        Assertions.assertEquals(
-                new BigDecimal(v).setScale(2, RoundingMode.HALF_UP).doubleValue(),
-                9.68,
-                0.001
-        );
+        double v = Gravity.getVerticalVelocityAtTime(time, angle, initialVelocity);
+        Assertions.assertEquals(expected, v,0.1);
 
-        v = Gravity.computeVelocityForDuration(40, terminalVelocity, Gravity.G_EARTH);
-        Assertions.assertEquals(
-                terminalVelocity,
-                new BigDecimal(v).setScale(2, RoundingMode.HALF_UP).doubleValue(),
-                0.001
-        );
 
-        v = Gravity.computeVelocityForDuration(40, terminalVelocity, Gravity.G_EARTH);
-        Assertions.assertEquals(
-                terminalVelocity,
-                new BigDecimal(v).setScale(2, RoundingMode.HALF_UP).doubleValue(),
-                0.001
-        );
+        initialVelocity = 29;
+        angle = 90;
+        time = 2.9561;
+        expected = 0.000659;
 
+        v = Gravity.getVerticalVelocityAtTime(time, angle, initialVelocity);
+        Assertions.assertEquals(expected,v,0.1);
+
+        initialVelocity = 29;
+        angle = 90;
+
+        initialVelocity = Gravity.getVerticalVelocityAtTime(2, angle, initialVelocity);
+        time = 0.9561;
+        expected = 0.000659;
+
+        v = Gravity.getVerticalVelocityAtTime(time, angle, initialVelocity);
+        Assertions.assertEquals(expected, v,0.01);
+
+
+        initialVelocity = 0;
+        angle = 270;
+        time = 3;
+        expected = Gravity.G_EARTH * time;
+
+        v = Gravity.getVerticalVelocityAtTime(time, angle, initialVelocity);
+        Assertions.assertEquals(expected, v,0.1);
+
+        initialVelocity = 29;
+        angle = 56;
+        time = 2.31;
+        expected = 1.38;
+
+        v = Gravity.getVerticalVelocityAtTime(time, angle, initialVelocity);
+        Assertions.assertEquals(expected, v, 0.01);
+
+
+        initialVelocity = 29;
+        angle = 56;
+        initialVelocity = Gravity.getVerticalVelocityAtTime(1.5, angle, initialVelocity);
+        time = 0.81;
+        expected = -0.2136;
+        v = Gravity.getVerticalVelocityAtTime(time, angle, initialVelocity);
+        Assertions.assertEquals(expected, v, 0.01);
     }
+
 
     @Test
-    @DisplayName("computeVerticalDistanceTravelled")
-    void testComputeVerticalDistanceTravelled() {
+    @DisplayName("getVerticalDistanceAtTime")
+    void testGetVerticalDistanceAtTime() {
 
-        double terminalVelocity = 56;
 
-        double p = Gravity.computeVerticalDistanceTravelled(
-                10, terminalVelocity, Gravity.G_EARTH
-        );
+        double verticalVelocity = 46.4;
+        double initialHeight = 0;
+        double time = 0.81;
+        double expected = 34.38;
 
-        Assertions.assertEquals(
-                 347.9,
-                 new BigDecimal(p).setScale(2, RoundingMode.HALF_UP).doubleValue(),
-                0.1
-        );
+        double h = Gravity.getVerticalDistanceAtTime(time, verticalVelocity, initialHeight);
+        Assertions.assertEquals(expected, h, 0.1);
 
-        p = Gravity.computeVerticalDistanceTravelled(
-                12, terminalVelocity, Gravity.G_EARTH
-        );
-        Assertions.assertEquals(
-                455.15,
-                new BigDecimal(p).setScale(21, RoundingMode.HALF_UP).doubleValue(),
-                0.1
+        verticalVelocity = 18;
+        initialHeight = 0;
+        time = 3;
+        expected = 9.855;
 
-        );
+        h = Gravity.getVerticalDistanceAtTime(time, verticalVelocity, initialHeight);
+        Assertions.assertEquals(expected, h, 0.1);
 
-        p = Gravity.computeVerticalDistanceTravelled(
-                0.023, terminalVelocity, Gravity.G_EARTH
-        );
 
-        Assertions.assertEquals(
-                455.15,
-                new BigDecimal(p).setScale(21, RoundingMode.HALF_UP).doubleValue(),
-                0.1
+        verticalVelocity = 180;
+        initialHeight = 0;
+        time = 12;
+        expected = 1453.68;
 
-        );
+        h = Gravity.getVerticalDistanceAtTime(time, verticalVelocity, initialHeight);
+        Assertions.assertEquals(expected, h, 0.1);
+
+
+        verticalVelocity = 180;
+        initialHeight = 0;
+        time = 7;
+
+        initialHeight = Gravity.getVerticalDistanceAtTime(time, verticalVelocity, initialHeight);
+        verticalVelocity = Gravity.getVerticalVelocityAtTime(time, 90, verticalVelocity);
+
+        time = 5;
+        expected = 1453.68;
+        h = Gravity.getVerticalDistanceAtTime(time, verticalVelocity, initialHeight);
+        Assertions.assertEquals(expected, h, 0.1);
+
 
     }
+
+
 
 
 }
