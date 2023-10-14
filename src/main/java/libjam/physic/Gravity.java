@@ -1,8 +1,16 @@
-package libjam.math;
+package libjam.physic;
 
 public class Gravity {
 
     public static final double G_EARTH = 9.81;
+
+    private double g = G_EARTH;
+
+
+    public Gravity(final double g) {
+        this.g = g;
+    }
+
 
 
     /**
@@ -17,8 +25,12 @@ public class Gravity {
      * The value may be < 0. Calling methods have to take measures if the returned value does not fit into the
      * frame of reference.
      */
-    public static double getVerticalDistanceAtTime(double time, double verticalVelocity, double height) {
-        return height + (verticalVelocity * time) - (G_EARTH * Math.pow(time, 2) / 2d);
+    public double getVerticalDistanceAtTime(
+            final double time,
+            final double verticalVelocity,
+            final double height
+    ) {
+        return height + (verticalVelocity * time) - (g * Math.pow(time, 2) / 2d);
     }
 
 
@@ -31,11 +43,15 @@ public class Gravity {
      * @param velocity The movement vector with V = V_x / cos(alpha) and V = V_y / sin(alpha)
      * @return
      */
-    public static double getVerticalVelocityAtTime(double time, double alpha, double velocity) {
+    public double getVerticalVelocityAtTime(
+            final double time,
+            final double alpha,
+            final double velocity
+    ) {
 
-        alpha = alpha % 360;
+        double a = alpha % 360;
 
-        boolean upwards = (alpha >= 0 && alpha <= 180);
+        boolean upwards = (a >= 0 &&  a <= 180);
 
         if (upwards && velocity < 0) {
             throw new IllegalArgumentException(
@@ -49,12 +65,10 @@ public class Gravity {
             );
         }
 
-        double v = G_EARTH * time;
+        double v = g * time;
 
         return velocity * Math.sin(Math.toRadians(alpha)) + (upwards ? -v : v);
     }
-
-
 
 
 }
