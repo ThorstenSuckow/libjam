@@ -1,7 +1,9 @@
 package libjam.demo.bounce;
 
 
+import libjam.gfx.object.Ball;
 import libjam.gfx.object.Level;
+import libjam.math.Vector;
 import libjam.physx.World;
 import libjam.physx.WorldObject;
 import libjam.physx.event.WorldChangeListener;
@@ -28,11 +30,20 @@ final public class BounceCanvas extends Canvas implements Runnable, WorldChangeL
      *
      * @param world The world that gets rendered in this canvas.
      */
-    public BounceCanvas(World world) {
-        this.world = world;
+    public BounceCanvas() {
+        final int width = 400;
+        final int height = 400;
+
+        world = new Level(width, height, 100);
+
+
+        Ball ball = new Ball(10);
+        ball.setXVector(Vector.from(0, 0));
+        ball.setYVector(Vector.from(0, 1));
+        world.add(ball, 20, 20);
+
         world.addWorldChangeListener(this);
         setBackground(Color.BLACK);
-        (new Thread(this)).start();
     }
 
     protected synchronized void syncWorldStateAndRepaint() {
