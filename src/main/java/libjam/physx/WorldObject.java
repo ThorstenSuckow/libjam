@@ -1,4 +1,4 @@
-package physx;
+package libjam.physx;
 
 
 import libjam.math.Vector;
@@ -17,9 +17,9 @@ public abstract class WorldObject {
      */
     private double mass = 0;
 
-    private Vector yVector = new Vector(new double[]{0, 0});
+    private Vector yVector = Vector.from(new double[]{0, 0});
 
-    private Vector xVector = new Vector(new double[]{0, 0});
+    private Vector xVector = Vector.from(new double[]{0, 0});
 
     public WorldObject(double mass) {
         this.mass = mass;

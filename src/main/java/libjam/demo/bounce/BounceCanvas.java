@@ -1,12 +1,12 @@
-package gfx.bounce;
+package libjam.demo.bounce;
 
 
-import gfx.object.Level;
-import physx.World;
-import physx.WorldObject;
-import physx.event.WorldChangeListener;
-import physx.event.WorldObjectEnterEvent;
-import util.Logger;
+import libjam.gfx.object.Level;
+import libjam.physx.World;
+import libjam.physx.WorldObject;
+import libjam.physx.event.WorldChangeListener;
+import libjam.physx.event.WorldObjectEnterEvent;
+import libjam.util.Logger;
 
 import java.awt.Canvas;
 import java.awt.Color;

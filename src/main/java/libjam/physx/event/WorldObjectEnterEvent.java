@@ -1,7 +1,7 @@
-package physx.event;
+package libjam.physx.event;
 
 
-import physx.WorldObject;
+import libjam.physx.WorldObject;
 
 /**
  * Event to be fired when a new Object gets added to the World.

@@ -1,4 +1,4 @@
-package physx.event;
+package libjam.physx.event;
 
 import java.util.EventObject;
 

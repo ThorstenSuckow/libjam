@@ -1,10 +1,10 @@
-package gfx.bounce;
+package libjam.demo.bounce;
 
 
-import gfx.object.Ball;
-import gfx.object.Level;
+import libjam.gfx.object.Ball;
+import libjam.gfx.object.Level;
 import libjam.math.Vector;
-import physx.World;
+import libjam.physx.World;
 
 /**
  * Main class for invoking bounce demo.

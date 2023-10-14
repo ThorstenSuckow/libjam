@@ -1,4 +1,4 @@
-package gfx.bounce;
+package libjam.demo.bounce;
 
 import javax.swing.JFrame;
 import java.awt.GridLayout;

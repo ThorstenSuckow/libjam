@@ -1,8 +1,8 @@
-package gfx.object;
+package libjam.gfx.object;
 
 
 import libjam.math.Vector;
-import physx.WorldObject;
+import libjam.physx.WorldObject;
 
 import java.awt.Color;
 import java.awt.Graphics;

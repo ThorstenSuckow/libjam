@@ -5,4 +5,4 @@
  * @author Thorsten Suckow-Homberg <thorsten@suckow-homberg.de>
  */
 
-package physx.event;
+package libjam.physx.event;

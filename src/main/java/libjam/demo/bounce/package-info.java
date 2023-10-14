@@ -5,4 +5,4 @@
  * @author Thorsten Suckow-Homberg <thorsten@suckow-homberg.de>
  */
 
-package gfx.bounce;
+package libjam.demo.bounce;

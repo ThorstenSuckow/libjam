@@ -1,10 +1,9 @@
-package physx;
+package libjam.physx;
 
-import libjam.math.Gravity;
 import libjam.math.Vector;
-import physx.event.WorldChangeListener;
-import physx.event.WorldEvent;
-import physx.event.WorldObjectEnterEvent;
+import libjam.physx.event.WorldChangeListener;
+import libjam.physx.event.WorldEvent;
+import libjam.physx.event.WorldObjectEnterEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,9 +143,9 @@ public class World {
 
 
             if (vY.getAt(1) > 0) {
-                yVelocity = Gravity.getVelocityAtTime(secondsSinceFirstImpulse);
-                yDistance = startY + Gravity.getDistanceTravelled(yVelocity);
-                vY.setAt(1, yVelocity);
+              //  yVelocity = Gravity.getVelocityAtTime(secondsSinceFirstImpulse);
+                //yDistance = startY + Gravity.getDistanceTravelled(yVelocity);
+               // vY.setAt(1, yVelocity);
             } else if (vY.getAt(1) < 0) {
               //  yDistance = obj.getY() + vY.getAt(1);
               //  vY.setAt(1,  vY.getAt(1) - frac);
@@ -154,13 +153,13 @@ public class World {
 
                // vY.setAt(1, -1-Gravity.getVelocityAtTime(secondsSinceFirstImpulse));
 
-                System.out.println(frac + Gravity.getVelocityAtTime(secondsSinceFirstImpulse));
-                vY.setAt(1, frac + Gravity.getVelocityAtTime(secondsSinceFirstImpulse));
-                yDistance = getHeight() +
-                        Math.min(
-                                -1, (
-                        frac * secondsSinceFirstImpulse + Gravity.getDistanceAtTime(secondsSinceFirstImpulse)
-                ));// Gravity.getDistanceTravelled(vY.getAt(1));
+               // System.out.println(frac + Gravity.getVelocityAtTime(secondsSinceFirstImpulse));
+            //    vY.setAt(1, frac + Gravity.getVelocityAtTime(secondsSinceFirstImpulse));
+          //      yDistance = getHeight() +
+            //            Math.min(
+              //                  -1, (
+                //        frac * secondsSinceFirstImpulse + Gravity.getDistanceAtTime(secondsSinceFirstImpulse)
+                //));// Gravity.getDistanceTravelled(vY.getAt(1));
 
             }
 

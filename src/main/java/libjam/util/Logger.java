@@ -1,4 +1,4 @@
-package util;
+package libjam.util;
 
 public class Logger {
 
