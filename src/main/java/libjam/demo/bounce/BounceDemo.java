@@ -3,6 +3,7 @@ package libjam.demo.bounce;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
@@ -17,12 +18,16 @@ public class BounceDemo extends JDialog {
     private JButton buttonCancel;
     private JButton releaseButton;
     private JPanel canvasContainer;
+    private JList<String> logList;
 
 
     public JPanel getCanvasContainer() {
         return canvasContainer;
     }
 
+    public JList<String> getLogList() {
+        return logList;
+    }
 
     public BounceDemo() {
         setContentPane(contentPane);

@@ -2,7 +2,7 @@ package libjam.physx.physics;
 
 import libjam.physic.Gravity;
 
-public class SimplePhysics implements PhysicEngine {
+public class SimplePhysicEngine implements PhysicEngine {
 
     /**
      * GravityModel used with this engine-instance
@@ -15,7 +15,7 @@ public class SimplePhysics implements PhysicEngine {
      *
      * @param gravityModel
      */
-    public SimplePhysics(final Gravity gravityModel) {
+    public SimplePhysicEngine(final Gravity gravityModel) {
         this.gravityModel = gravityModel;
     }
 

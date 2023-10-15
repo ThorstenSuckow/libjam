@@ -3,85 +3,154 @@ package libjam.physx.physics;
 
 import libjam.util.Unit;
 
+import java.awt.geom.Rectangle2D;
+
 /**
- * A frame of reference serves as an underlying model for an instance of a
- * libjam.physx.World and can be seen as the layer that translates real-world
- * dimensions to computer graphic dimensions.
- * It provides an installation of a PhysicEngine and provides information about
- * the dimensions the world uses, such as the height and the width and the scale
- * that serves as the reference when translating real-world values for rendering
+ * A FrameOfReference serves as an observator for a ibjam.physx.World and can be
+ * undertsood as the layer that translates real-world dimensions to computer graphic dimensions.
+ * It provides and translates information about the dimensions the world uses, such as the height
+ * and the width and the scale that serves as the reference when translating such  values for rendering
  * purposes.
+ * In this regard, an instance is close to the frame-of-reference-definition
+ * in physics, albeit less complex.
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Frame_of_reference">https://en.wikipedia.org/wiki/Frame_of_reference</a>
  */
 public class FrameOfReference {
 
     /**
-     * number of meters per pixel.
+     * scaling factor, i.e. number of meters per pixel.
      */
-    private double worldScale;
+    private double scale;
 
     /**
-     * Width of the frame in meters.
+     * The dimensions of the observed frame, in meters
      */
-    private double width;
+    private Rectangle2D.Double observedFrame;
 
-    /**
-     * Height of the frame in meters..
-     */
-    private double height;
 
     /**
      *
-     */
-    PhysicEngine engine;
-
-    /**
-     *
-     * @param engine The PhysicEngine that should be used with this FrameOfReference.
-     * @param width The overall with of this game world in meters
-     * @param height The overall height of this game world in meters
-     * @param worldScale  Represents the number of meters that should be treated as one pixel,
+     * @param scale  Represents the number of meters that should be treated as one pixel,
      * e.g. a value of 100 would mean 1 pixels is used to depict 100 meters,
      * whereas a value of 0.01 means that 1 pixel represents 1 cm and so on.
      * Rendering engines should query the value to properly translate physical
      * effects to the game world and vice versa. Rendering engines should treat the
      * value in accordance.
+     * @param observedFrame The initial dimensions of the frame to observe
+     * @param unit The unit used for the width and height of the frame.
+     *
      */
     public FrameOfReference(
-            PhysicEngine engine,
-            final int width,
-            final int height,
-            double worldScale
+        final double scale,
+        final Rectangle2D.Double observedFrame,
+        Unit unit
     ) {
-        this.engine = engine;
-        this.worldScale = worldScale;
-        this.width = width;
-        this.height = height;
+        this.observedFrame = observedFrame;
+        this.scale = scale;
+
+        updateObservedFrame(observedFrame, unit, Unit.METER);
+    }
+
+    public void updateObservedFrame( final Rectangle2D.Double observedFrame, Unit fromUnit, Unit toUnit) {
+        updateObservedFrame(
+                observedFrame.getX(),
+                observedFrame.getY(),
+                observedFrame.getWidth(),
+                observedFrame.getHeight(),
+                fromUnit, toUnit
+        );
+    }
+
+
+    public void updateObservedFrame(double x, double y, double width, double height, Unit fromUnit, Unit toUnit) {
+        observedFrame.setRect(
+            transformScaleValueToUnit(x, fromUnit, toUnit),
+            transformScaleValueToUnit(y, fromUnit, toUnit),
+            transformScaleValueToUnit(width, fromUnit, toUnit),
+            transformScaleValueToUnit(height, fromUnit, toUnit)
+        );
+    }
+
+
+
+
+    /**
+     * Returns the x-coordinate of the observed frame in meters.
+     * @return
+     */
+    public double getObservedX() {
+        return observedFrame.getX();
+    }
+
+    /**
+     * Returns the y-coordinate of the observed frame in meters.
+     * @return
+     */
+    public double getObservedY() {
+        return observedFrame.getY();
     }
 
 
     /**
-     * Returns the PhysicEngine used by this frame.
+     * Returns the x-coordinate of the observed frame in meters.
+     *
+     * @param unit
      *
      * @return
      */
-    public PhysicEngine getEngine() {
-        return engine;
+    public double getObservedX(Unit unit) {
+
+        switch (unit) {
+
+            case METER:
+                return observedFrame.getX();
+
+            case PIXEL:
+                return observedFrame.getX() / scale;
+
+            default:
+                throw new UnsupportedOperationException("unit not supported");
+        }
+
     }
 
     /**
-     * Returns the height of the frame in meters.
+     * Returns the y-coordinate of the observed frame in meters.
+     *
+     * @param unit
+     *
      * @return
      */
-    public double getHeight() {
-        return height;
+    public double getObservedY(Unit unit) {
+        switch (unit) {
+
+            case METER:
+                return observedFrame.getY();
+
+            case PIXEL:
+                return observedFrame.getY() / scale;
+
+            default:
+                throw new UnsupportedOperationException("unit not supported");
+        }
+    }
+
+
+    /**
+     * Returns the height of the observed frame in meters.
+     * @return
+     */
+    public double getObservedHeight() {
+        return observedFrame.getHeight();
     }
 
     /**
      * Returns the width of the frame in meters.
      * @return
      */
-    public double getWidth() {
-        return width;
+    public double getObservedWidth() {
+        return observedFrame.getWidth();
     }
 
 
@@ -89,8 +158,8 @@ public class FrameOfReference {
      * Returns the world scale.
      * @return
      */
-    public double getWorldScale() {
-        return worldScale;
+    public double getScale() {
+        return scale;
     }
 
     /**
@@ -98,15 +167,15 @@ public class FrameOfReference {
      * @param unit
      * @return
      */
-    public double getHeight(final Unit unit) {
+    public double getObservedHeight(final Unit unit) {
 
         switch (unit) {
 
             case METER:
-                return height;
+                return observedFrame.getHeight();
 
             case PIXEL:
-                return height / worldScale;
+                return observedFrame.getHeight() / scale;
 
             default:
                 throw new UnsupportedOperationException("unit not supported");
@@ -119,15 +188,15 @@ public class FrameOfReference {
      * @param unit
      * @return
      */
-    public double getWidth(final Unit unit) {
+    public double getObservedWidth(final Unit unit) {
 
         switch (unit) {
 
             case METER:
-                return width;
+                return observedFrame.getWidth();
 
             case PIXEL:
-                return width / worldScale;
+                return observedFrame.getWidth() / scale;
 
             default:
                 throw new UnsupportedOperationException("unit not supported");
@@ -143,12 +212,16 @@ public class FrameOfReference {
      *
      * @return
      */
-    public double scaleToUnitValue(
+    public double transformScaleValueToUnit(
             final double value,
             final Unit from,
             final Unit to
     ) {
-        return scaleToUnitValue(value, from, to, worldScale);
+        if (from == to) {
+            return value;
+        }
+
+        return Unit.transformScaleValueToUnit(value, from, to, scale);
     }
 
     /**
@@ -160,7 +233,7 @@ public class FrameOfReference {
      * @param scale
      * @return
      */
-    public double scaleToUnitValue(
+    public double transformScaleValueToUnit(
             double value,
             final Unit from,
             final Unit to,
@@ -192,4 +265,67 @@ public class FrameOfReference {
     }
 
 
+    public void setObservedHeight(double newHeight, Unit unit) {
+
+        updateObservedFrame(
+            getObservedX(Unit.METER),
+            getObservedY(Unit.METER),
+            getObservedWidth(Unit.METER),
+            Unit.transformScaleValueToUnit(
+                newHeight,
+                unit,
+                Unit.METER,
+                getScale()
+            ),
+            Unit.METER, Unit.METER
+        );
+    }
+
+    public void setObservedWidth(double newWidth, Unit unit) {
+        updateObservedFrame(
+                getObservedX(Unit.METER),
+                getObservedY(Unit.METER),
+                Unit.transformScaleValueToUnit(
+                        newWidth,
+                        unit,
+                        Unit.METER,
+                        getScale()
+                ),
+                getObservedHeight(Unit.METER),
+
+                Unit.METER, Unit.METER
+        );
+    }
+
+    public void setObservedX(double newX, Unit unit) {
+        updateObservedFrame(
+                Unit.transformScaleValueToUnit(
+                        newX,
+                        unit,
+                        Unit.METER,
+                        getScale()
+                ),
+                getObservedY(Unit.METER),
+                getObservedWidth(Unit.METER),
+                getObservedHeight(Unit.METER),
+
+                Unit.METER, Unit.METER
+        );
+    }
+
+    public void setObservedY(double newY, Unit unit) {
+        updateObservedFrame(
+                getObservedX(Unit.METER),
+                Unit.transformScaleValueToUnit(
+                        newY,
+                        unit,
+                        Unit.METER,
+                        getScale()
+                ),
+                getObservedWidth(Unit.METER),
+                getObservedHeight(Unit.METER),
+
+                Unit.METER, Unit.METER
+        );
+    }
 }

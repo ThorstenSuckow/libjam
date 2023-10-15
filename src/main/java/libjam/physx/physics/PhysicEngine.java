@@ -5,7 +5,7 @@ package libjam.physx.physics;
  * All units are treated as "real-world" units (e.g. meters, seconds) and should be
  * translated to cartesian coordinates the implementing API requires for rendering.
  */
-interface PhysicEngine {
+public interface PhysicEngine {
 
     /**
      * Returns the distance an object has vertically traveled, considering an verticalVelocity
