@@ -3,8 +3,6 @@ package libjam.physx;
 
 import libjam.math.Vector;
 
-import java.awt.Graphics;
-
 
 public abstract class WorldObject {
 
@@ -68,7 +66,6 @@ public abstract class WorldObject {
         return y;
     }
 
-    public abstract void draw(Graphics g, double worldScale);
 
     /**
      * Returns the cross-sectional area of this object in cm².

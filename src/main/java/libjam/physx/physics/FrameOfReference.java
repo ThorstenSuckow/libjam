@@ -2,6 +2,7 @@ package libjam.physx.physics;
 
 
 import libjam.physx.World;
+import libjam.physx.WorldObject;
 import libjam.util.Unit;
 
 import java.awt.geom.Rectangle2D;
@@ -87,7 +88,7 @@ public class FrameOfReference {
      * Returns the observed world.
      * @return
      */
-    public World getWorld() {
+    public World getObservedWorld() {
         return world;
     }
 
@@ -170,6 +171,10 @@ public class FrameOfReference {
         return observedFrame.getWidth();
     }
 
+
+    public Rectangle2D.Double getObservedFrame() {
+        return observedFrame;
+    }
 
     /**
      * Returns the world scale.
@@ -347,4 +352,30 @@ public class FrameOfReference {
                 Unit.METER, Unit.METER
         );
     }
+
+
+    /**
+     * Returns true if this FrameOFReference is able to observe the specified
+     * WorldObject. This is the case if any point of the object is within the
+     * bounds of THIS frame.
+     *
+     * @param obj
+     * @return
+     */
+    public boolean canObserve(final WorldObject obj) {
+
+        double objX = Unit.transformScaleValueToUnit(obj.getX(), Unit.METER, Unit.PIXEL, scale);
+        double objY = Unit.transformScaleValueToUnit(obj.getY(), Unit.METER, Unit.PIXEL, scale);
+        double objH = Unit.transformScaleValueToUnit(obj.getHeight(), Unit.METER, Unit.PIXEL, scale);
+        double objW = Unit.transformScaleValueToUnit(obj.getWidth(), Unit.METER, Unit.PIXEL, scale);
+
+        Rectangle2D.Double objRect = new Rectangle2D.Double(
+                objX, objY, objW, objH
+        );
+
+        return true;
+        //return observedFrame.contains(objRect);
+        //return observedFrame.contains(objRect);//objRect.intersects(observedFrame);
+    }
+
 }

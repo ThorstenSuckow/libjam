@@ -1,29 +1,22 @@
-package libjam.gfx.object;
+package libjam.gfx.renderer.overlay;
 
-
+import libjam.gfx.ReferenceRenderingContext;
 import libjam.math.Vector;
 import libjam.physx.WorldObject;
 
 import java.awt.Color;
 import java.awt.Graphics;
 
-public class Ball extends WorldObject {
+public class VectorRenderer implements OverlayRenderer {
 
-    public Ball(double mass) {
-        super(mass);
-    }
 
-    /**
-     * Draws the ball given the graphic context.
-     *
-     * @param g Current graphic context.
-     */
-    public void draw(final Graphics g, double worldScale) {
+    @Override
+    public WorldObject draw(Graphics g, WorldObject obj, ReferenceRenderingContext referenceRenderingContext) {
 
-        double x = getX();
-        double y = getY();
-        double w = getWidth();
-        double h = getHeight();
+        double x = obj.getX();
+        double y = obj.getY();
+        double w = obj.getWidth();
+        double h = obj.getHeight();
 
         int xStart =   (int) (x + w / 2);
         int yStart =  (int) (y + h / 2);
@@ -31,11 +24,9 @@ public class Ball extends WorldObject {
         int labelOffset = 10;
 
         g.setColor(Color.WHITE);
-        g.drawOval((int) x, (int) y, (int) w, (int) h);
 
-
-        String ySpeed =  String.format("%.2f", getYVector().getAt(1));
-        String xSpeed =  String.format("%.2f", getXVector().getAt(0));
+        String ySpeed =  String.format("%.2f", obj.getYVector().getAt(1));
+        String xSpeed =  String.format("%.2f", obj.getXVector().getAt(0));
 
 
         // y-Vector
@@ -79,7 +70,7 @@ public class Ball extends WorldObject {
                 yStart
         );
 
-        Vector movementVector = getMovementVector();
+        Vector movementVector = obj.getMovementVector();
         g.setColor(Color.GREEN);
         g.drawLine (
                 xStart,
@@ -88,36 +79,6 @@ public class Ball extends WorldObject {
                 (int) (yStart + movementVector.getAt(1))
         );
 
-
+        return obj;
     }
-
-    @Override
-    public double getCrossSectionalArea() {
-        return Math.PI * Math.pow(getWidth() / 2, 2);
-    }
-
-    public double getElasticity() {
-        return 0.5;
-    }
-
-    /**
-     * Returns the height for this object.
-     *
-     * @return the width
-     */
-    @Override
-    public double getWidth() {
-        return 10;
-    }
-
-    /**
-     * Returns the height for this object.
-     *
-     * @return the height
-     */
-    @Override
-    public double getHeight() {
-        return 10;
-    }
-
 }

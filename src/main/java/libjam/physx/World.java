@@ -64,7 +64,7 @@ public class World {
      *
      * @return this
      */
-    public World add(final WorldObject worldObject, final int x, final int y, Unit unit) {
+    public World add(final WorldObject worldObject, final int x, final int y, final Unit unit) {
         worldObject.setXY(x, y);
         worldObjects.add(worldObject);
         
@@ -179,6 +179,5 @@ public class World {
 
 
     }
-
 
 }

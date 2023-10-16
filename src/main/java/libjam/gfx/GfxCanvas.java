@@ -1,6 +1,5 @@
 package libjam.gfx;
 
-import libjam.physx.World;
 import libjam.util.Logger;
 
 import java.awt.Canvas;
@@ -10,15 +9,13 @@ import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Renderer extends Canvas implements Runnable {
+public class GfxCanvas extends Canvas implements Runnable {
 
 
 
     private Graphics gContext;
 
     private Image buffer;
-
-    private World world;
 
 
     /**
@@ -27,13 +24,13 @@ public class Renderer extends Canvas implements Runnable {
     private List<Drawable> drawableList = new ArrayList<>();
 
 
-    public Renderer(int width, int height) {
-
+    public GfxCanvas(int width, int height) {
         setSize(width, height);
-
     }
 
-    public Renderer addDrawable(Drawable drawable) {
+
+
+    public GfxCanvas addDrawable(Drawable drawable) {
         drawable.setCanvasContext(new CanvasContext(getWidth(), getHeight()));
         drawableList.add(drawable);
 
@@ -54,6 +51,8 @@ public class Renderer extends Canvas implements Runnable {
 
         gContext.setColor(Color.BLACK);
         gContext.fillRect(0, 0, this.getWidth(), this.getHeight());
+
+
 
 
         for (Drawable drawable: drawableList) {
