@@ -43,6 +43,8 @@ public abstract class WorldObject {
     abstract public double getHeight();
 
     public WorldObject setXY(final double x, final double y) {
+
+
         this.x = x;
         this.y = y;
         return this;
@@ -58,10 +60,22 @@ public abstract class WorldObject {
         return this;
     }
 
+    /**
+     * Returns the current x-coordinate of the object.
+     * The x-coordinate is measured from the bottom-left.
+     *
+     * @return the x-coordinate of the object in meters
+     */
     public double getX() {
         return x;
     }
 
+    /**
+     * Returns the current y-coordinate of the object.
+     * The y-coordinate is measured from the bottom-left.
+     *
+     * @return the y-coordinate of the object in meters
+     */
     public double getY() {
         return y;
     }

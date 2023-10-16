@@ -1,5 +1,6 @@
 package libjam.gfx;
 
+
 import libjam.util.Logger;
 
 import java.awt.Canvas;
@@ -18,6 +19,7 @@ public class GfxCanvas extends Canvas implements Runnable {
     private Image buffer;
 
 
+
     /**
      *
      */
@@ -31,7 +33,11 @@ public class GfxCanvas extends Canvas implements Runnable {
 
 
     public GfxCanvas addDrawable(Drawable drawable) {
+
         drawable.setCanvasContext(new CanvasContext(getWidth(), getHeight()));
+
+
+
         drawableList.add(drawable);
 
         return this;

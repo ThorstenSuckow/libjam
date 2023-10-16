@@ -25,10 +25,10 @@ final public class BounceCanvas extends GfxCanvas {
 
         Logger.log( "GfxCanvas: " + width + "px x " + height + "px");
         FrameOfReference fref = new FrameOfReference(
-                0.01, new Rectangle2D.Double(0, 0, 2, 3), Unit.METER
+                0.01, new Rectangle2D.Double(0, 0, 3, 3), Unit.METER
         );
 
-        World world = new World(1, 2);
+        World world = new World(5, 5);
         fref.observe(world);
 
         FrameOfReferenceRenderer frameOfReferenceRenderer = new FrameOfReferenceRenderer(fref);
@@ -43,7 +43,11 @@ final public class BounceCanvas extends GfxCanvas {
         addDrawable(frameOfReferenceRenderer);
 
 
-        world.add(new Ball(0.2), 150, 200, Unit.PIXEL);
+        world.add(
+            new Ball(0.2),
+            1.5,
+            1.5
+        );
 
     }
 

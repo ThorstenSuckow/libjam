@@ -3,6 +3,7 @@ package libjam.physx.physics;
 
 import libjam.physx.World;
 import libjam.physx.WorldObject;
+import libjam.util.Logger;
 import libjam.util.Unit;
 
 import java.awt.geom.Rectangle2D;
@@ -80,6 +81,26 @@ public class FrameOfReference {
 
     public FrameOfReference observe(final World world) {
         this.world = world;
+
+        if (observedFrame.getWidth() > world.getWidth()) {
+            setObservedWidth(world.getWidth(), Unit.METER);
+        } else {
+            setObservedWidth(Math.min(world.getWidth(), observedFrame.getWidth()), Unit.METER);
+        }
+
+        Logger.log("World-width: " + world.getWidth() + "; frame-width: " + observedFrame.getWidth());
+
+        if (observedFrame.getHeight() > world.getHeight()) {
+            setObservedHeight(world.getHeight(), Unit.METER);
+        } else {
+            setObservedHeight(Math.min(world.getHeight(), observedFrame.getHeight()), Unit.METER);
+        }
+
+        Logger.log("World-height: " + world.getHeight() + "; frame-height: " + observedFrame.getHeight());
+
+        if (getObservedX() >= world.getWidth()) {
+            throw new RuntimeException("observed X exceeds world's width");
+        }
 
         return this;
     }
@@ -364,17 +385,13 @@ public class FrameOfReference {
      */
     public boolean canObserve(final WorldObject obj) {
 
-        double objX = Unit.transformScaleValueToUnit(obj.getX(), Unit.METER, Unit.PIXEL, scale);
-        double objY = Unit.transformScaleValueToUnit(obj.getY(), Unit.METER, Unit.PIXEL, scale);
-        double objH = Unit.transformScaleValueToUnit(obj.getHeight(), Unit.METER, Unit.PIXEL, scale);
-        double objW = Unit.transformScaleValueToUnit(obj.getWidth(), Unit.METER, Unit.PIXEL, scale);
+        libjam.util.Logger.log(
+                "frame: (" +
+                        Unit.toPixel(observedFrame.getWidth(), getScale()) + "," +
+                        Unit.toPixel(observedFrame.getHeight(), getScale()) + ")" + observedFrame.getX() + " "+ observedFrame.getY()+ " "+ observedFrame.getWidth()+ " "+  observedFrame.getHeight());
+        libjam.util.Logger.log( "obj: "+ obj.getX() + " "+ obj.getY()+ " "+ obj.getWidth()+ " "+  obj.getHeight());
 
-        Rectangle2D.Double objRect = new Rectangle2D.Double(
-                objX, objY, objW, objH
-        );
-
-        return true;
-        //return observedFrame.contains(objRect);
+        return observedFrame.contains( obj.getX(), obj.getY(), obj.getWidth(), obj.getHeight());
         //return observedFrame.contains(objRect);//objRect.intersects(observedFrame);
     }
 

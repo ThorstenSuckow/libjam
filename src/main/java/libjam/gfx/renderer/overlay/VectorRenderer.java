@@ -11,15 +11,21 @@ public class VectorRenderer implements OverlayRenderer {
 
 
     @Override
-    public WorldObject draw(Graphics g, WorldObject obj, ReferenceRenderingContext referenceRenderingContext) {
+    public WorldObject draw(
+            final Graphics g,
+            final WorldObject obj,
+            final ReferenceRenderingContext referenceRenderingContext
+    ) {
 
-        double x = obj.getX();
-        double y = obj.getY();
-        double w = obj.getWidth();
-        double h = obj.getHeight();
+        ReferenceRenderingContext context = referenceRenderingContext;
 
-        int xStart =   (int) (x + w / 2);
-        int yStart =  (int) (y + h / 2);
+        int x = context.toX(obj.getX());
+        int y = context.toY(obj.getY());
+        int w = context.toWidth(obj.getWidth());
+        int h = context.toHeight(obj.getHeight());
+
+        int xStart = x + w/2;
+        int yStart = y + h/2;
         int vectorLength = 60;
         int labelOffset = 10;
 

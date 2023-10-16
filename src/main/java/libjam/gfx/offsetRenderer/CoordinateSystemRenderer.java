@@ -86,12 +86,14 @@ public  class CoordinateSystemRenderer extends OffsetRenderer {
 
         g.setColor(Color.cyan);
 
+        int zero = offsetLeft;
+
         // x
         g.drawLine(0, height, width, height);
 
-        for (int i = getStartX(); i <= getEndX(); i += 5) {
+        for (int i = 0, len = getEndX() ; i <= len; i += 5) {
 
-            int x1 = i + offsetLeft;
+            int x1 = zero + i;
             int y1 = height + (i % 10 == 0 ? 4 : 2);
             int x2 = x1;
             int y2 = height;
@@ -109,7 +111,7 @@ public  class CoordinateSystemRenderer extends OffsetRenderer {
                 AffineTransform at = new AffineTransform();
                 at.rotate( -Math.PI / 2);
                 g2d.setTransform(at);
-                g2d.drawString(i + "",- height - 24, x1 + 3);
+                g2d.drawString((i + getStartX()) + "",- height - 24, x1 + 3);
                 // reset
                 g2d.setTransform(defaultAt);
             }
@@ -126,13 +128,15 @@ public  class CoordinateSystemRenderer extends OffsetRenderer {
 
         g.setColor(Color.CYAN);
 
+        int zero = height - offsetBottom;
+
         // y
         g.drawLine(offsetLeft,  0, offsetLeft, height);
 
-        for (int i = getStartY(); i <= getEndY(); i += 5) {
+        for (int i = 0, len = getEndY(); i <= len; i += 5) {
 
             int x1 = offsetLeft - (i % 10 == 0 ? 4 : 2);
-            int y1 = height - i - getOffsetBottom() ;
+            int y1 = zero - i;
 
             int x2 = getOffsetLeft();
             int y2 = y1;
@@ -141,7 +145,7 @@ public  class CoordinateSystemRenderer extends OffsetRenderer {
 
             if (i % 10 == 0 && i != 0) {
                 g.setFont(font);
-                g.drawString(i+ "", offsetLeft - 24, y1 + 3);
+                g.drawString((getStartY() + i)+ "", offsetLeft - 24, y1 + 3);
             }
 
 

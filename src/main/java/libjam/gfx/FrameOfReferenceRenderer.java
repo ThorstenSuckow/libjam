@@ -48,38 +48,8 @@ public class FrameOfReferenceRenderer implements Drawable {
         );
     }
 
-    private int offsetX;
-
-
     public void addOffsetRenderer(final OffsetRenderer renderer) {
-
-        if (renderer instanceof CoordinateSystemRenderer axisRenderer) {
-
-            // X-Axis
-            int rangeStartX = (int) frameOfReference.getObservedX(Unit.PIXEL);
-            int rangeEndX = (int) frameOfReference.getObservedWidth(Unit.PIXEL);
-
-            axisRenderer.setRangeX(rangeStartX, rangeEndX);
-
-            double newWidth = frameOfReference.getObservedWidth(Unit.PIXEL) - axisRenderer.getOffsetLeft();
-            frameOfReference.setObservedWidth(newWidth, Unit.PIXEL);
-
-            offsetX += axisRenderer.getOffsetLeft();
-
-
-            // Y-Axis
-            int rangeStartY = (int) frameOfReference.getObservedY(Unit.PIXEL);
-            int rangeEndY = (int) frameOfReference.getObservedHeight(Unit.PIXEL);
-
-            axisRenderer.setRangeY(rangeStartY, rangeEndY);
-
-            double oldHeight = frameOfReference.getObservedHeight(Unit.PIXEL);
-            double newHeight = oldHeight - axisRenderer.getOffsetBottom();
-            frameOfReference.setObservedHeight(newHeight, Unit.PIXEL);
-        }
-
         offsetRenderer.add(renderer);
-
     }
 
     @Override
@@ -108,6 +78,8 @@ public class FrameOfReferenceRenderer implements Drawable {
         for (OffsetRenderer offRenderer: offsetRenderer) {
             offRenderer.setCanvasContext(canvasContext);
         }
+
+        this.updateOffsetRenderer();
 
     }
 
@@ -144,6 +116,7 @@ public class FrameOfReferenceRenderer implements Drawable {
             for (WorldObject obj : world.getObjects()) {
 
                 if (!frameOfReference.canObserve(obj)) {
+                    Logger.log("Cannot observe " + obj.getX() + " " + obj.getY() + " " + obj.getWidth() + " " + obj.getHeight());
                     continue;
                 }
 
@@ -158,6 +131,54 @@ public class FrameOfReferenceRenderer implements Drawable {
         } else {
             Logger.log("worldRendererFactory is null.");
         }
+
+    }
+
+
+    private void updateOffsetRenderer() {
+
+        int offsetLeft = 0;
+        int offsetBottom = 0;
+
+        for (OffsetRenderer renderer: offsetRenderer) {
+
+            if (renderer instanceof CoordinateSystemRenderer axisRenderer) {
+
+                // X-Axis
+                int rangeStartX = (int) frameOfReference.getObservedX(Unit.PIXEL);
+                int rangeEndX = (int) frameOfReference.getObservedWidth(Unit.PIXEL);
+                axisRenderer.setRangeX(rangeStartX, rangeEndX);
+
+                /**
+                 * width must be adjusted if width exceedsd acanvas
+                 */
+                //double newWidth = frameOfReference.getObservedWidth(Unit.PIXEL) - axisRenderer.getOffsetLeft();
+               // frameOfReference.setObservedWidth(newWidth, Unit.PIXEL);
+
+                offsetLeft += axisRenderer.getOffsetLeft();
+                offsetBottom += axisRenderer.getOffsetBottom();
+
+
+                // Y-Axis
+                int rangeStartY = (int) frameOfReference.getObservedY(Unit.PIXEL);
+                int rangeEndY = (int) frameOfReference.getObservedHeight(Unit.PIXEL);
+
+                axisRenderer.setRangeY(rangeStartY, rangeEndY);
+
+                /*
+                    new height must be adjusted if it exceeds the canvas
+                double newHeight =
+                        frameOfReference.getObservedHeight(Unit.PIXEL)
+                        - axisRenderer.getOffsetBottom()
+                        - (int) frameOfReference.getObservedX(Unit.PIXEL);
+                */
+                //double newHeight = oldHeight - axisRenderer.getOffsetBottom();
+               // frameOfReference.setObservedHeight(newHeight, Unit.PIXEL);
+            }
+        }
+
+        referenceRenderingContext.setOffsetLeft(offsetLeft);
+        referenceRenderingContext.setOffsetBottom(offsetBottom);
 
     }
 

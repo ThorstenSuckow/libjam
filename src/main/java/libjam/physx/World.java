@@ -4,7 +4,6 @@ import libjam.math.Vector;
 import libjam.physx.event.WorldChangeListener;
 import libjam.physx.event.WorldEvent;
 import libjam.physx.event.WorldObjectEnterEvent;
-import libjam.util.Unit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +63,7 @@ public class World {
      *
      * @return this
      */
-    public World add(final WorldObject worldObject, final int x, final int y, final Unit unit) {
+    public World add(final WorldObject worldObject, final double x, final double y) {
         worldObject.setXY(x, y);
         worldObjects.add(worldObject);
         

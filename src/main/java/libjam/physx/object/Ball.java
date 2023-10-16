@@ -25,7 +25,7 @@ public class Ball extends WorldObject {
      */
     @Override
     public double getWidth() {
-        return 10;
+        return 0.1;
     }
 
     /**
@@ -35,7 +35,7 @@ public class Ball extends WorldObject {
      */
     @Override
     public double getHeight() {
-        return 10;
+        return 0.1;
     }
 
 }

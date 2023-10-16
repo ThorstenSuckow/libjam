@@ -54,6 +54,10 @@ public enum Unit {
             final double scale
     ) {
 
+        if (to == from) {
+            return value;
+        }
+
         switch (from) {
 
             case METER:
@@ -78,6 +82,9 @@ public enum Unit {
 
     }
 
+    public static int toPixel(final double value, final double scale) {
+        return (int) transformScaleValueToUnit(value, Unit.METER, Unit.PIXEL, scale);
+    }
 
     public static double toScreenY(int y, double referenceHeight) {
         return referenceHeight - y;
