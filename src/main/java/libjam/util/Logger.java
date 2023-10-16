@@ -15,7 +15,6 @@ class LogImpl {
             listener.onLogEvent(new LogEvent(this, str));
         }
 
-        System.out.println(str);
     }
 
     public void addLogListener(final LogListener listener) {
@@ -39,6 +38,14 @@ final public class Logger {
 
     public static void log(final String str) {
         loggerInst.log(str);
+    }
+
+    public static void log(final int i) {
+        loggerInst.log(Integer.valueOf(i).toString());
+    }
+
+    public static void log(final double d) {
+        loggerInst.log(Double.valueOf(d).toString());
     }
 
 }

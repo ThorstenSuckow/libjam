@@ -1,6 +1,7 @@
 package libjam.physx.physics;
 
 
+import libjam.physx.World;
 import libjam.util.Unit;
 
 import java.awt.geom.Rectangle2D;
@@ -27,6 +28,9 @@ public class FrameOfReference {
      * The dimensions of the observed frame, in meters
      */
     private Rectangle2D.Double observedFrame;
+
+
+    private World world;
 
 
     /**
@@ -73,6 +77,19 @@ public class FrameOfReference {
     }
 
 
+    public FrameOfReference observe(final World world) {
+        this.world = world;
+
+        return this;
+    }
+
+    /**
+     * Returns the observed world.
+     * @return
+     */
+    public World getWorld() {
+        return world;
+    }
 
 
     /**
@@ -298,6 +315,7 @@ public class FrameOfReference {
     }
 
     public void setObservedX(double newX, Unit unit) {
+
         updateObservedFrame(
                 Unit.transformScaleValueToUnit(
                         newX,
@@ -314,6 +332,7 @@ public class FrameOfReference {
     }
 
     public void setObservedY(double newY, Unit unit) {
+
         updateObservedFrame(
                 getObservedX(Unit.METER),
                 Unit.transformScaleValueToUnit(

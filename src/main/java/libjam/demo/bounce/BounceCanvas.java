@@ -3,8 +3,9 @@ package libjam.demo.bounce;
 
 import libjam.gfx.FrameOfReferenceRenderer;
 import libjam.gfx.Renderer;
-import libjam.gfx.offsetRenderer.XAxisOffsetRenderer;
-import libjam.gfx.offsetRenderer.YAxisOffsetRenderer;
+import libjam.gfx.offsetRenderer.CoordinateSystemRenderer;
+import libjam.physx.World;
+import libjam.physx.event.WorldObjectEnterEvent;
 import libjam.physx.physics.FrameOfReference;
 import libjam.util.Logger;
 import libjam.util.Unit;
@@ -18,22 +19,20 @@ final public class BounceCanvas extends Renderer  {
         super(width, height);
         Logger.log( width +" "+ height);
         FrameOfReference fref = new FrameOfReference(
-                0.1, new Rectangle2D.Double(0, 0, width, height), Unit.PIXEL
+                0.01, new Rectangle2D.Double(0, 0, 2, 3), Unit.METER
         );
+
+        World world = new World(1, 2);
+        world.addWorldChangeListener((WorldObjectEnterEvent obj) -> {
+            Logger.log(obj.toString());
+        });
+        fref.observe(world);
 
         FrameOfReferenceRenderer frameOfReferenceRenderer = new FrameOfReferenceRenderer(fref);
 
-        frameOfReferenceRenderer.addOffsetRenderer(
-            new YAxisOffsetRenderer(20)
-        );
-        frameOfReferenceRenderer.addOffsetRenderer(
-            new XAxisOffsetRenderer(20)
-        );
+        frameOfReferenceRenderer.addOffsetRenderer(new CoordinateSystemRenderer(87, 41));
 
-
-        addDrawable(
-           frameOfReferenceRenderer
-        );
+        addDrawable(frameOfReferenceRenderer);
     }
 
     public void render() {

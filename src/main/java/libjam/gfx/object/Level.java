@@ -15,8 +15,8 @@ public class Level extends World {
      * @param height     The height for this world.
      * @param worldScale
      */
-    public Level(int width, int height, double worldScale) {
-        super(width, height, worldScale);
+    public Level(int width, int height) {
+        super(width, height);
     }
 
     public void draw(final Graphics g) {

@@ -1,9 +1,8 @@
 package libjam.gfx;
 
-import libjam.gfx.offsetRenderer.AxisRenderer;
+import libjam.gfx.offsetRenderer.CoordinateSystemRenderer;
 import libjam.gfx.offsetRenderer.OffsetRenderer;
 import libjam.physx.physics.FrameOfReference;
-import libjam.util.Logger;
 import libjam.util.Unit;
 
 import java.awt.Color;
@@ -32,35 +31,30 @@ public class FrameOfReferenceRenderer implements Drawable {
     private int offsetX;
 
 
-    public void addOffsetRenderer(OffsetRenderer renderer) {
+    public void addOffsetRenderer(final OffsetRenderer renderer) {
 
-        if (renderer.getPosition() == OffsetRenderer.BOTTOM) {
+        if (renderer instanceof CoordinateSystemRenderer axisRenderer) {
 
-            int rangeStart = (int) frameOfReference.getObservedX(Unit.PIXEL);
-            int rangeEnd = (int) frameOfReference.getObservedWidth(Unit.PIXEL);
+            // X-Axis
+            int rangeStartX = (int) frameOfReference.getObservedX(Unit.PIXEL);
+            int rangeEndX = (int) frameOfReference.getObservedWidth(Unit.PIXEL);
 
-            if (renderer instanceof AxisRenderer) {
-                ((AxisRenderer) renderer).setRange(rangeStart, rangeEnd);
-            }
+            axisRenderer.setRangeX(rangeStartX, rangeEndX);
 
-            double newWidth = frameOfReference.getObservedWidth(Unit.PIXEL) - renderer.getOffset();
+            double newWidth = frameOfReference.getObservedWidth(Unit.PIXEL) - axisRenderer.getOffsetLeft();
             frameOfReference.setObservedWidth(newWidth, Unit.PIXEL);
 
-            Logger.log(frameOfReference.getObservedWidth(Unit.PIXEL) + " <- width");
-            offsetX += renderer.getOffset();
+            offsetX += axisRenderer.getOffsetLeft();
 
-        } else if (renderer.getPosition() == OffsetRenderer.LEFT) {
 
-            int rangeStart = (int) frameOfReference.getObservedY(Unit.PIXEL);
-            int rangeEnd = (int) frameOfReference.getObservedHeight(Unit.PIXEL);
+            // Y-Axis
+            int rangeStartY = (int) frameOfReference.getObservedY(Unit.PIXEL);
+            int rangeEndY = (int) frameOfReference.getObservedHeight(Unit.PIXEL);
 
-            if (renderer instanceof AxisRenderer) {
-                ((AxisRenderer) renderer).setRange(rangeStart, rangeEnd);
-            }
+            axisRenderer.setRangeY(rangeStartY, rangeEndY);
 
             double oldHeight = frameOfReference.getObservedHeight(Unit.PIXEL);
-            Logger.log("rangeStart " + rangeStart + "- " + rangeEnd );
-            double newHeight = oldHeight - renderer.getOffset();
+            double newHeight = oldHeight - axisRenderer.getOffsetBottom();
             frameOfReference.setObservedHeight(newHeight, Unit.PIXEL);
         }
 

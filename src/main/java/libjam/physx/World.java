@@ -4,6 +4,7 @@ import libjam.math.Vector;
 import libjam.physx.event.WorldChangeListener;
 import libjam.physx.event.WorldEvent;
 import libjam.physx.event.WorldObjectEnterEvent;
+import libjam.util.Unit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +18,6 @@ public class World {
 
     protected int height;
 
-    /**
-     * Provides information about the scale of this world, measured in pixels.
-     * 100 is calculated as 100 pixel = 1 m = 100 cm.
-     */
-    private double worldScale = 1;
 
     /**
      * The list of worldObjects in this world.
@@ -39,8 +35,7 @@ public class World {
      * @param width The width for this world.
      * @param height The height for this world.
      */
-    public World(final int width, final int height, double worldScale) {
-        this.worldScale = worldScale;
+    public World(final int width, final int height) {
         this.width = width;
         this.height = height;
     }
@@ -69,7 +64,7 @@ public class World {
      *
      * @return this
      */
-    public World add(final WorldObject worldObject, final int x, final int y) {
+    public World add(final WorldObject worldObject, final int x, final int y, Unit unit) {
         worldObject.setXY(x, y);
         worldObjects.add(worldObject);
         
@@ -103,10 +98,6 @@ public class World {
     }
 
     private long startedAt = 0;
-
-    public double getWorldScale() {
-        return worldScale;
-    }
 
     public double startY = 200;
 
