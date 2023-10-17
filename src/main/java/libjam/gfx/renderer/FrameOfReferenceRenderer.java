@@ -1,28 +1,31 @@
-package libjam.gfx;
+package libjam.gfx.renderer;
 
-import libjam.gfx.offsetRenderer.CoordinateSystemRenderer;
-import libjam.gfx.offsetRenderer.OffsetRenderer;
-import libjam.gfx.renderer.ObjectRenderer;
-import libjam.gfx.renderer.WorldRendererFactory;
+import libjam.gfx.Camera;
+import libjam.gfx.CanvasContext;
+import libjam.gfx.Drawable;
+import libjam.gfx.ReferenceRenderingContext;
+import libjam.gfx.ScaledSceneFrame;
+import libjam.gfx.event.CameraEvent;
+import libjam.gfx.event.CameraListener;
+import libjam.gfx.renderer.offset.CoordinateSystemRenderer;
+import libjam.gfx.renderer.offset.OffsetRenderer;
 import libjam.gfx.renderer.overlay.OverlayRenderer;
 import libjam.gfx.renderer.overlay.VectorRenderer;
-import libjam.physx.World;
 import libjam.physx.WorldObject;
-import libjam.physx.physics.FrameOfReference;
 import libjam.util.Logger;
-import libjam.util.Unit;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FrameOfReferenceRenderer implements Drawable {
+public class FrameOfReferenceRenderer implements Drawable, CameraListener {
 
+    private final Camera camera;
     /**
      *
      */
-    FrameOfReference frameOfReference;
+    //FrameOfReference frameOfReference;
 
 
     private List<OffsetRenderer> offsetRenderer = new ArrayList<>();
@@ -30,23 +33,33 @@ public class FrameOfReferenceRenderer implements Drawable {
 
     private WorldRendererFactory worldRendererFactory;
 
-    ReferenceRenderingContext referenceRenderingContext;
+    ReferenceRenderingContext renderingContext;
+
+    /**
+     * The scalingFactor required by this renderer.
+     */
+    double scalingFactor;
+
+    /**
+     *
+     * @param camera
+     * @param scalingFactor The initial scaling factor to pass to SceneFrames.
+     */
+    public FrameOfReferenceRenderer(Camera camera, double scalingFactor) {
+        //this.frameOfReference = frameOfReference;
+
+        this.camera = camera;
+
+        camera.addCameraListener(this);
+
+        this.scalingFactor = scalingFactor;
+        this.renderingContext = new ReferenceRenderingContext(camera.getScaledSceneFrame(scalingFactor));
+    }
 
     public void setWorldRendererFactory(WorldRendererFactory worldRendererFactory) {
         this.worldRendererFactory = worldRendererFactory;
     }
 
-
-    public FrameOfReferenceRenderer(
-            final FrameOfReference frameOfReference
-    ) {
-        this.frameOfReference = frameOfReference;
-
-        this.referenceRenderingContext = new ReferenceRenderingContext(
-                frameOfReference.getObservedFrame(),
-                frameOfReference.getScale()
-        );
-    }
 
     public void addOffsetRenderer(final OffsetRenderer renderer) {
         offsetRenderer.add(renderer);
@@ -73,14 +86,13 @@ public class FrameOfReferenceRenderer implements Drawable {
     public void setCanvasContext(CanvasContext canvasContext) {
         this.canvasContext = canvasContext;
 
-        this.referenceRenderingContext.setCanvasContext(canvasContext);
+        this.renderingContext.setCanvasContext(canvasContext);
 
         for (OffsetRenderer offRenderer: offsetRenderer) {
             offRenderer.setCanvasContext(canvasContext);
         }
 
         this.updateOffsetRenderer();
-
     }
 
     private List<OverlayRenderer> overlayList;
@@ -95,10 +107,10 @@ public class FrameOfReferenceRenderer implements Drawable {
         return overlayList;
     }
 
-    private WorldObject applyOverlays(Graphics g, WorldObject obj, ReferenceRenderingContext referenceRenderingContext) {
+    private WorldObject applyOverlays(Graphics g, WorldObject obj, ReferenceRenderingContext renderingContext) {
 
         for (OverlayRenderer overlayRenderer: getOverlayRenderer(obj)) {
-            overlayRenderer.draw(g, obj, referenceRenderingContext);
+            overlayRenderer.draw(g, obj, renderingContext);
         }
 
         return obj;
@@ -110,21 +122,15 @@ public class FrameOfReferenceRenderer implements Drawable {
     private void renderObjects(Graphics g) {
 
         if (worldRendererFactory != null) {
-            World world = frameOfReference.getObservedWorld();
 
             ObjectRenderer objRenderer;
-            for (WorldObject obj : world.getObjects()) {
 
-                if (!frameOfReference.canObserve(obj)) {
-                    Logger.log("Cannot observe " + obj.getX() + " " + obj.getY() + " " + obj.getWidth() + " " + obj.getHeight());
-                    continue;
-                }
-
+            for (WorldObject obj : camera.getObjectsInScene()) {
                 objRenderer = worldRendererFactory.getRenderer(obj);
                 applyOverlays(
                         g,
-                        objRenderer.draw(g, obj, referenceRenderingContext),
-                        referenceRenderingContext
+                        objRenderer.draw(g, obj, renderingContext),
+                        renderingContext
                 );
 
             }
@@ -144,10 +150,14 @@ public class FrameOfReferenceRenderer implements Drawable {
 
             if (renderer instanceof CoordinateSystemRenderer axisRenderer) {
 
+                ScaledSceneFrame sceneFrame = renderingContext.getScaledSceneFrame();
+
                 // X-Axis
-                int rangeStartX = (int) frameOfReference.getObservedX(Unit.PIXEL);
-                int rangeEndX = (int) frameOfReference.getObservedWidth(Unit.PIXEL);
+                int rangeStartX = (int) sceneFrame.getX();
+                int rangeEndX = (int) sceneFrame.getWidth();
                 axisRenderer.setRangeX(rangeStartX, rangeEndX);
+
+                Logger.log(rangeStartX+ " "+rangeEndX);
 
                 /**
                  * width must be adjusted if width exceedsd acanvas
@@ -160,8 +170,8 @@ public class FrameOfReferenceRenderer implements Drawable {
 
 
                 // Y-Axis
-                int rangeStartY = (int) frameOfReference.getObservedY(Unit.PIXEL);
-                int rangeEndY = (int) frameOfReference.getObservedHeight(Unit.PIXEL);
+                int rangeStartY = (int) sceneFrame.getY();
+                int rangeEndY = (int) sceneFrame.getHeight();
 
                 axisRenderer.setRangeY(rangeStartY, rangeEndY);
 
@@ -177,9 +187,18 @@ public class FrameOfReferenceRenderer implements Drawable {
             }
         }
 
-        referenceRenderingContext.setOffsetLeft(offsetLeft);
-        referenceRenderingContext.setOffsetBottom(offsetBottom);
+        renderingContext.setOffsetLeft(offsetLeft);
+        renderingContext.setOffsetBottom(offsetBottom);
 
     }
 
+    @Override
+    public void cameraActionPerformed(CameraEvent e) {
+
+        Logger.log("moved: " + camera.getX() +" "+ camera.getY());
+        this.renderingContext.setScaledSceneFrame(
+                camera.getScaledSceneFrame(scalingFactor)
+        );
+        this.updateOffsetRenderer();
+    }
 }

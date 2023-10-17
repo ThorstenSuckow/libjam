@@ -1,6 +1,7 @@
 package libjam.physx;
 
 
+import libjam.math.Rectangle;
 import libjam.math.Vector;
 
 
@@ -106,6 +107,11 @@ public abstract class WorldObject {
     public WorldObject setYVector(final Vector v) {
         yVector = v;
         return this;
+    }
+
+
+    public Rectangle getRectangle() {
+        return new Rectangle(getX(), getY(), getWidth(), getHeight());
     }
 
 

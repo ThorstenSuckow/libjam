@@ -19,6 +19,10 @@ public class BounceDemo extends JDialog {
     private JButton releaseButton;
     private JPanel canvasContainer;
     private JList<String> logList;
+    public JButton rightButton;
+    public JButton leftButton;
+    public JButton upButton;
+    public JButton downButton;
 
 
     public JPanel getCanvasContainer() {
@@ -78,7 +82,7 @@ public class BounceDemo extends JDialog {
         new BounceController(dialog);
 
         dialog.setTitle("Bounce Demo");
-        dialog.setResizable(false);
+        dialog.setResizable(true);
 
         dialog.setSize(800,600);
         dialog.setLocationRelativeTo(null);

@@ -6,13 +6,17 @@ import libjam.util.event.LogListener;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
 public class BounceController implements ComponentListener, LogListener {
 
     private BounceDemo dialog;
+
+    private BounceCanvas bounceCanvas;
 
     private JList<String> logList;
 
@@ -32,12 +36,38 @@ public class BounceController implements ComponentListener, LogListener {
         Logger.addLogListener(this);
     }
 
+
+    void buttonActionPerformed(ActionEvent e) {
+
+        if (e.getSource() == dialog.upButton) {
+             bounceCanvas.getCamera().addY(0.1);
+        }
+
+        if (e.getSource() ==  dialog.downButton) {
+                bounceCanvas.getCamera().addY(-0.1);
+        }
+
+        if (e.getSource() ==  dialog.leftButton) {
+            bounceCanvas.getCamera().addX(-0.1);
+        }
+
+        if (e.getSource() ==  dialog.rightButton) {
+            bounceCanvas.getCamera().addX(0.1);
+        }
+    }
+
     void install() {
 
         installLogger();
 
+        dialog.upButton.addActionListener(this::buttonActionPerformed);
+        dialog.downButton.addActionListener(this::buttonActionPerformed);
+        dialog.leftButton.addActionListener(this::buttonActionPerformed);
+        dialog.rightButton.addActionListener(this::buttonActionPerformed);
+
+
         //install BounceCanvas
-        BounceCanvas bounceCanvas = new BounceCanvas(
+        bounceCanvas = new BounceCanvas(
                 dialog.getCanvasContainer().getWidth(),
                 dialog.getCanvasContainer().getHeight()
         );
@@ -46,6 +76,8 @@ public class BounceController implements ComponentListener, LogListener {
         bounceCanvas.setBounds(0, 0, dialog.getCanvasContainer().getWidth(),  dialog.getCanvasContainer().getHeight());
 
         bounceCanvas.render();
+
+        bounceCanvas.addComponentListener(bounceCanvas);
 
         Logger.log("BounceCanvas started...");
 
@@ -62,7 +94,19 @@ public class BounceController implements ComponentListener, LogListener {
     public void componentHidden(ComponentEvent e) {}
 
     @Override
-    public void componentResized(ComponentEvent e) {}
+    public void componentResized(ComponentEvent e) {
+
+        Dimension size = dialog.getCanvasContainer().getSize();
+
+        //System.out.
+
+        if (bounceCanvas != null) {
+
+            bounceCanvas.setSize(size);
+
+        }
+
+    }
 
     @Override
     public void componentMoved(ComponentEvent e) {}

@@ -1,4 +1,4 @@
-package libjam.gfx.offsetRenderer;
+package libjam.gfx.renderer.offset;
 
 import libjam.gfx.CanvasContext;
 import libjam.gfx.Drawable;

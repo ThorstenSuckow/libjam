@@ -1,4 +1,4 @@
-package libjam.gfx.offsetRenderer;
+package libjam.gfx.renderer.offset;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -74,6 +74,7 @@ public  class CoordinateSystemRenderer extends OffsetRenderer {
 
 
     public void drawX(final Graphics g) {
+
 
         int width = getCanvasContext().getWidth();
         int offsetLeft = getOffsetLeft();

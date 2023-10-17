@@ -5,12 +5,15 @@ import libjam.util.Logger;
 
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GfxCanvas extends Canvas implements Runnable {
+public class GfxCanvas extends Canvas implements Runnable, ComponentListener {
 
 
 
@@ -35,15 +38,13 @@ public class GfxCanvas extends Canvas implements Runnable {
     public GfxCanvas addDrawable(Drawable drawable) {
 
         drawable.setCanvasContext(new CanvasContext(getWidth(), getHeight()));
-
-
-
         drawableList.add(drawable);
 
         return this;
     }
 
     public boolean updateDrawables() {
+        // image needs to be cleared on resize
         if (buffer == null) {
             buffer = createImage(this.getWidth(), this.getHeight());
 
@@ -57,8 +58,6 @@ public class GfxCanvas extends Canvas implements Runnable {
 
         gContext.setColor(Color.BLACK);
         gContext.fillRect(0, 0, this.getWidth(), this.getHeight());
-
-
 
 
         for (Drawable drawable: drawableList) {
@@ -112,5 +111,46 @@ public class GfxCanvas extends Canvas implements Runnable {
 
             //end  = System.currentTimeMillis();
         }
+    }
+
+
+    /**
+     * Listener for the component "resize" event.
+     * Takes care of updating this canvas' size and creating a new CanvasContext that gets
+     * passed to all the Drawables this GfxCanvas maintains.
+     *
+     * @param e the event to be processed
+     */
+    @Override
+    public void componentResized(ComponentEvent e) {
+
+        Dimension dim = getSize();
+
+        Logger.log("GfxCanvas: " +  dim.getWidth() + " x " +  dim.getHeight());
+
+        this.setSize(dim);
+        buffer = null;
+
+        for (Drawable drawable: drawableList) {
+            drawable.setCanvasContext(
+                    new CanvasContext((int) dim.getWidth(), (int) dim.getHeight())
+            );
+        }
+
+    }
+
+    @Override
+    public void componentMoved(ComponentEvent e) {
+
+    }
+
+    @Override
+    public void componentShown(ComponentEvent e) {
+
+    }
+
+    @Override
+    public void componentHidden(ComponentEvent e) {
+
     }
 }

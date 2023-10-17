@@ -2,14 +2,9 @@ package libjam.gfx;
 
 import libjam.util.Unit;
 
-import java.awt.geom.Rectangle2D;
+public class ReferenceRenderingContext implements RenderingContext{
 
-public class ReferenceRenderingContext {
-
-    private Rectangle2D.Double observedFrame;
-
-
-    private double scale;
+    private ScaledSceneFrame sceneFrame;
 
     private CanvasContext canvasContext;
 
@@ -17,31 +12,42 @@ public class ReferenceRenderingContext {
 
     private int offsetBottom;
 
-    public ReferenceRenderingContext(Rectangle2D.Double observedFrame, double scale) {
-        this.observedFrame = observedFrame;
-        this.scale = scale;
+    public ReferenceRenderingContext(final ScaledSceneFrame sceneFrame) {
+        this.sceneFrame = sceneFrame;
     }
 
     public void setCanvasContext(CanvasContext canvasContext) {
         this.canvasContext = canvasContext;
     }
 
+    @Override
     public CanvasContext getCanvasContext() {
         return canvasContext;
     }
 
-    public Rectangle2D.Double getObservedFrame() {
-        return observedFrame;
+    @Override
+    public ScaledSceneFrame getScaledSceneFrame() {
+        return sceneFrame;
     }
 
-    public double getScale() {
-        return scale;
+    @Override
+    public ReferenceRenderingContext setScaledSceneFrame(ScaledSceneFrame sceneFrame) {
+        this.sceneFrame = sceneFrame;
+        return this;
+    }
+
+
+    @Override
+    public double getScalingFactor() {
+        return getScaledSceneFrame().getScalingFactor();
     }
 
 
     public void setOffsetLeft(int offsetLeft) {
         this.offsetLeft = offsetLeft;
     }
+
+    @Override
 
     public int getOffsetLeft() {
         return offsetLeft;
@@ -51,31 +57,38 @@ public class ReferenceRenderingContext {
         this.offsetBottom = offsetBottom;
     }
 
+    @Override
+
     public int getOffsetBottom() {
         return offsetBottom;
     }
 
-    public int toX(double worldX) {
+    @Override
+    public int toX(double x) {
 
-        int zero = getOffsetLeft() - Unit.toPixel(observedFrame.getX(), scale);
+        int zero = getOffsetLeft() - (int) sceneFrame.getX();
 
-        return zero + (int) Unit.toPixel(worldX, scale);
+        return zero + (int) Unit.toPixel(x, getScalingFactor());
 
     }
 
-    public int toY(double worldY) {
+    @Override
+    public int toY(double y) {
 
         int zero = getCanvasContext().getHeight() - getOffsetBottom();
 
-        return zero - (int) Unit.toPixel(worldY, scale) + Unit.toPixel(observedFrame.getY(), scale);
+        return zero - (int) Unit.toPixel(y, getScalingFactor()) + (int) sceneFrame.getY();
     }
 
-    public int toWidth(double worldWidth) {
-        return Unit.toPixel(worldWidth, scale);
+    @Override
+    public int toWidth(double width) {
+        return Unit.toPixel(width, getScalingFactor());
     }
 
-    public int toHeight(double worldHeight) {
-        return Unit.toPixel(worldHeight, scale);
+
+    @Override
+    public int toHeight(double height) {
+        return Unit.toPixel(height, getScalingFactor());
     }
 
 }
