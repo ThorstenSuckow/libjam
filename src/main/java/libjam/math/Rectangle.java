@@ -74,6 +74,8 @@ public class Rectangle {
     /**
      * Sets the x-coordinate of this Rectangle.
      *
+     * @param x the new x-coordinate for this Rectangle.
+     *
      * @return this Rectangle.
      */
     @SuppressWarnings("checkstyle:HiddenField")
@@ -86,6 +88,7 @@ public class Rectangle {
     /**
      * Sets the y-coordinate of this Rectangle.
      *
+     * @param y the new y-coordinate for this Rectangle.
      *
      * @return this Rectangle.
      */
@@ -99,6 +102,8 @@ public class Rectangle {
     /**
      * Sets the height of this Rectangle.
      *
+     * @param height the new height for this Rectangle.
+     *
      * @return this Rectangle.
      */
     @SuppressWarnings("checkstyle:HiddenField")
@@ -110,6 +115,8 @@ public class Rectangle {
 
     /**
      * Sets the width of this Rectangle.
+     *
+     * @param width the new width for this Rectangle.
      *
      * @return this Rectangle.
      */
@@ -145,28 +152,27 @@ public class Rectangle {
      *
      * @return true if this Rectangle and the specified Rectangle intersect, otherwise false.
      */
+    @SuppressWarnings("checkstyle:HiddenField")
     public boolean intersects(final Rectangle rect) {
 
-        double getY = getY();
-        double getX = getX();
-        double getWidth = getWidth();
-        double getHeight = getHeight();
+        double y = getY();
+        double x = getX();
+        double w = getWidth();
+        double h = getHeight();
 
-        double rgetY = rect.getY();
-        double rgetX = rect.getX();
-        double rgetWidth = rect.getWidth();
-        double rgetHeight = rect.getHeight();
+        double ry = rect.getY();
+        double rx = rect.getX();
+        double rw = rect.getWidth();
+        double rh = rect.getHeight();
 
-
-
-        if (rgetWidth <= 0 || rgetHeight <= 0 || getWidth <= 0 || getHeight <= 0) {
+        if (rw <= 0 || rh <= 0 || w <= 0 || h <= 0) {
             return false;
         }
 
-        return (getY + getHeight > rgetY && getY + getHeight < rgetY + rgetHeight)
-            || (getY > rgetY && getY < rgetY + rgetHeight)
-            || (getX + getWidth > rgetX && getX + getWidth < rgetX + rgetWidth)
-            || (getX > rgetX && getX < rgetX + rgetWidth);
+        return (y + h > ry && y + h < ry + rh)
+            || (y > ry && y < ry + rh)
+                || (x + w > rx && x + w < rx + rw)
+            || (x > rx && x < rx + rw);
     }
 
 
