@@ -135,13 +135,10 @@ public class Rectangle {
      * @return true if this Rectangle contains the specified Rectangle, otherwise false.
      */
     public boolean contains(final Rectangle rect) {
-        if (rect.getX() >= getX()
-            && rect.getY() >= getY()
-            && (rect.getX() + rect.getWidth()) <= getX() + getWidth()
-            && (rect.getY() + rect.getHeight()) <= getY() + getHeight()) {
-            return true;
-        }
-        return false;
+        return rect.x >= x
+            && rect.y >= y
+            && rect.x + rect.width <= x + width
+            && rect.y + rect.height <= y + height;
     }
 
 
@@ -152,26 +149,20 @@ public class Rectangle {
      *
      * @return true if this Rectangle and the specified Rectangle intersect, otherwise false.
      */
-    @SuppressWarnings("checkstyle:HiddenField")
     public boolean intersects(final Rectangle rect) {
 
-        double y = getY();
-        double x = getX();
-        double w = getWidth();
-        double h = getHeight();
+        double ry = rect.y;
+        double rx = rect.x;
+        double rw = rect.width;
+        double rh = rect.height;
 
-        double ry = rect.getY();
-        double rx = rect.getX();
-        double rw = rect.getWidth();
-        double rh = rect.getHeight();
-
-        if (rw <= 0 || rh <= 0 || w <= 0 || h <= 0) {
+        if (rw <= 0 || rh <= 0 || width <= 0 || height <= 0) {
             return false;
         }
 
-        return (y + h > ry && y + h < ry + rh)
+        return (y + height > ry && y + height < ry + rh)
             || (y > ry && y < ry + rh)
-                || (x + w > rx && x + w < rx + rw)
+                || (x + width > rx && x + width < rx + rw)
             || (x > rx && x < rx + rw);
     }
 
