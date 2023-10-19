@@ -2,143 +2,171 @@ package libjam.math;
 
 
 /**
- * A rectangle specifies an area in a coordinate space that is defined by the rectangle's
- * bottom-left point (x, y) in the coordinate space, its width, and its height. The difference to
- * the java.awt.Rectangle-implementation is that the origin is bottom left insteadt of top-left.
+ * Like the java.awt.Rectangle, a rectangle specifies an area in a coordinate space, but this implementation
+ * is defined by the rectangle's <u>bottom-left point (x, y)</u> (instead of java.awt.Rectangle's top-left point) in
+ * the coordinate space, its width, and its height.
  */
 public class Rectangle {
 
-    /**
-     * The x-coordinate of the lower left corner
-     */
+    @SuppressWarnings("checkstyle:JavadocVariable")
     private double x;
 
-    /**
-     * The y-coordinate of the lower left corner
-     */
+    @SuppressWarnings("checkstyle:JavadocVariable")
     private double y;
 
+    @SuppressWarnings("checkstyle:JavadocVariable")
     private double width;
 
+    @SuppressWarnings("checkstyle:JavadocVariable")
     private double height;
 
 
-    public Rectangle(double x, double y, double width, double height) {
+    /**
+     * Creates a new Rectangle based on the (x, y) coordinates and the width and height.
+     *
+     * @param x The x-coordinate in the coordinate space.
+     * @param y The y-coordinate in the coordinate space.
+     * @param width The width of the Rectangle.
+     * @param height The height of the Rectangle.
+     */
+    @SuppressWarnings("checkstyle:HiddenField")
+    public Rectangle(final double x, final double y, final double width, final double height) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
     }
 
-    public Rectangle setLocation(double x, double y) {
-        this.x = x;
-        this.y = y;
-        return this;
-    }
 
-    public Rectangle setDimension(double width, double height) {
-        this.width = width;
-        this.height = height;
-        return this;
-    }
-
-
+    /**
+     * @return This Rectangle's height.
+     */
     public double getHeight() {
         return height;
     }
 
 
+    /**
+     * @return This Rectangle's width.
+     */
     public double getWidth() {
         return width;
     }
 
 
+    /**
+     * @return This Rectangle's x-coordinate.
+     */
     public double getX() {
         return x;
     }
 
 
+    /**
+     * @return This Rectangle's y-coordinate.
+     */
     public double getY() {
         return y;
 
     }
 
 
-    public Rectangle setX(double x) {
+    /**
+     * Sets the x-coordinate of this Rectangle.
+     *
+     * @return this Rectangle.
+     */
+    @SuppressWarnings("checkstyle:HiddenField")
+    public Rectangle setX(final double x) {
         this.x = x;
         return this;
     }
 
 
-    public Rectangle setY(double y) {
+    /**
+     * Sets the y-coordinate of this Rectangle.
+     *
+     *
+     * @return this Rectangle.
+     */
+    @SuppressWarnings("checkstyle:HiddenField")
+    public Rectangle setY(final double y) {
         this.y = y;
         return this;
     }
 
 
-    public Rectangle setHeight(double height) {
+    /**
+     * Sets the height of this Rectangle.
+     *
+     * @return this Rectangle.
+     */
+    @SuppressWarnings("checkstyle:HiddenField")
+    public Rectangle setHeight(final double height) {
         this.height = height;
         return this;
     }
 
-    public Rectangle setWidth(double width) {
+
+    /**
+     * Sets the width of this Rectangle.
+     *
+     * @return this Rectangle.
+     */
+    @SuppressWarnings("checkstyle:HiddenField")
+    public Rectangle setWidth(final double width) {
         this.width = width;
         return this;
     }
 
 
     /**
+     * Returns true if this Rectangle entirely contains the specified Rectangle.
      *
-     * @param x the x-xoordinate of the lower left corner of the object
-     * @param y the y-coordinate of the lower left corner of the object
-     * @param width the width of the object
-     * @param height the height of the object
-     * @return
+     * @param rect the specified Rectangle
+     *
+     * @return true if this Rectangle contains the specified Rectangle, otherwise false.
      */
-    public boolean contains(final  Rectangle rect) {
-
-        double camX_left = getX();
-        double camX_right = getX() + getWidth();
-        double camY_bottom = getY();
-        double camY_top = getY() + getHeight();
-
-        double x_left = rect.getX();
-        double y_bottom = rect.getY();
-        double x_right = x_left + rect.getWidth();
-        double y_top = y_bottom + rect.getHeight();
-
-
-        // contains
-        if (x_left >= camX_left &&
-            y_bottom >= camY_bottom &&
-            (x_right) <= camX_right &&
-            (y_top) <= camY_top) {
+    public boolean contains(final Rectangle rect) {
+        if (rect.getX() >= getX()
+            && rect.getY() >= getY()
+            && (rect.getX() + rect.getWidth()) <= getX() + getWidth()
+            && (rect.getY() + rect.getHeight()) <= getY() + getHeight()) {
             return true;
         }
         return false;
     }
 
+
+    /**
+     * Returns true if this Rectangle and the specified Rectangle intersect.
+     *
+     * @param rect the specified Rectangle
+     *
+     * @return true if this Rectangle and the specified Rectangle intersect, otherwise false.
+     */
     public boolean intersects(final Rectangle rect) {
 
-        double camX_left = getX();
-        double camX_right = getX() + getWidth();
-        double camY_bottom = getY();
-        double camY_top = getY() + getHeight();
+        double getY = getY();
+        double getX = getX();
+        double getWidth = getWidth();
+        double getHeight = getHeight();
 
-        double x_left = rect.getX();
-        double y_bottom = rect.getY();
-        double x_right = x_left + rect.getWidth();
-        double y_top = y_bottom + rect.getHeight();
+        double rgetY = rect.getY();
+        double rgetX = rect.getX();
+        double rgetWidth = rect.getWidth();
+        double rgetHeight = rect.getHeight();
 
-        if (x_right > camX_left &&
-                y_top > camY_bottom &&
-                x_left < camX_right &&
-                camY_bottom < camY_top) {
-            return true;
+
+
+        if (rgetWidth <= 0 || rgetHeight <= 0 || getWidth <= 0 || getHeight <= 0) {
+            return false;
         }
 
-        return false;
-
+        return (getY + getHeight > rgetY && getY + getHeight < rgetY + rgetHeight)
+            || (getY > rgetY && getY < rgetY + rgetHeight)
+            || (getX + getWidth > rgetX && getX + getWidth < rgetX + rgetWidth)
+            || (getX > rgetX && getX < rgetX + rgetWidth);
     }
 
 
