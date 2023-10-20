@@ -2,8 +2,8 @@ package libjam.gfx;
 
 /**
  * A RenderingContext provides information about metrics used by a top-level renderer
- * that should be made available to lower-level renderers that are generally not aware
- * of such metrics, such as scaling factors, boundaries and offsets and coordinates.
+ * that should be made available to lower-level renderers, including scaling factors,
+ * boundaries, offsets and coordinates.
  */
 public interface RenderingContext {
 
@@ -12,45 +12,31 @@ public interface RenderingContext {
      */
     CanvasContext getCanvasContext();
 
+
     /**
-     * @return the RenderingDimensionsFrame this Context is coupled with.
+     * @return the ScaledSceneFrame this RenderingContext uses.
      */
     ScaledSceneFrame getScaledSceneFrame();
 
-    /**
-     * @return the RenderingDimensionsFrame this Context is coupled with.
-     */
-    RenderingContext setScaledSceneFrame(ScaledSceneFrame sceneFrame);
 
     /**
-     * Provides information about the scalingFactor this context uses.
-     * Underlying renderers can align their scaling to this factor.
+     * Sets this ScaledSceneFrame of this RenderingContext to the specified ScaledSceneFrame.
      *
-     * @return the scalingFactor used by this RenderingContext.
+     * @param sceneFrame the specified ScaledSceneFrame
+     *
+     * @return this RenderingContext
+     */
+    RenderingContext setScaledSceneFrame(final ScaledSceneFrame sceneFrame);
+
+
+    /**
+     * @return the scalingFactor available with this RenderingContext.
      */
     double getScalingFactor();
 
 
     /**
-     * Returns the left offset in pixels that is not safe to use by this
-     * rendering context.
-     *
-     * @return the left offset in pixels.
-     */
-    int getOffsetLeft();
-
-
-    /**
-     * Returns the bottom offset in pixels that is not safe to use by this
-     * rendering context.
-     *
-     * @return the left offset in pixels.
-     */
-    int getOffsetBottom();
-
-
-    /**
-     * Returns a x-position value in the world translated to a pixel value by this
+     * Returns an x-position value in the world translated to a pixel value by this
      * Context.
      *
      * @param x An x-value of the world that should be translated to a pixel value.
@@ -64,7 +50,7 @@ public interface RenderingContext {
      * Returns a y-position value in the world translated to a pixel value by this
      * Context.
      *
-     * @param y An y-value of the world that should be translated to a pixel value.
+     * @param y A y-value of the world that should be translated to a pixel value.
      *
      * @return the translated pixel value.
      */
@@ -75,7 +61,7 @@ public interface RenderingContext {
      * Returns a width-value in the world translated to a pixel value by this
      * Context.
      *
-     * @param width An width-value of the world that should be translated to a pixel value.
+     * @param width A width-value of the world that should be translated to a pixel value.
      *
      * @return the translated pixel value.
      */
@@ -86,7 +72,7 @@ public interface RenderingContext {
      * Returns a height-value in the world translated to a pixel value by this
      * Context.
      *
-     * @param height An height-value of the world that should be translated to a pixel value.
+     * @param height A height-value of the world that should be translated to a pixel value.
      *
      * @return the translated pixel value.
      */
