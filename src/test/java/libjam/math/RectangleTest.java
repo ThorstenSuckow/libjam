@@ -49,4 +49,39 @@ class RectangleTest {
         Assertions.assertTrue(r1.intersects(r3));
     }
 
+
+    @SuppressWarnings("checkstyle:MagicNumber")
+    @Test
+    @DisplayName("equals")
+    void testEquals() {
+
+        Rectangle r1 = new Rectangle(1, 1, 3, 4);
+
+        Assertions.assertTrue(r1.equals(r1));
+
+        Rectangle r2 = new Rectangle(2, 2, 1, 1);
+
+        Assertions.assertFalse(r1.equals(r2));
+
+        Rectangle r3 = new Rectangle(1, 1, 3, 4);
+        Assertions.assertTrue(r1.equals(r3));
+    }
+
+
+    @SuppressWarnings("checkstyle:MagicNumber")
+    @Test
+    @DisplayName("update")
+    void testUpdate() {
+
+        Rectangle r1 = new Rectangle(1, 1, 3, 4);
+        Rectangle r2 = new Rectangle(2, 2, 1, 1);
+
+
+        Assertions.assertFalse(r1.equals(r2));
+
+        r1.updateFrom(r2);
+
+        Assertions.assertTrue(r1.equals(r2));
+    }
+
 }

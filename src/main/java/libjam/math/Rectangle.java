@@ -167,4 +167,34 @@ public class Rectangle {
     }
 
 
+    /**
+     * Checks the specified Rectangle for equality with this Rectangle. Two Rectangles are considered equal if
+     * their x, y, width and height attributes are the same.
+     *
+     * @param rect The specified Rectangle.
+     * @return true if the specified Rectangle is considered equal to this Rectangle, othwerwise false.
+     */
+    public boolean equals(final Rectangle rect) {
+
+        return (this == rect)
+            || width == rect.width && height == rect.height && x == rect.x && y == rect.y;
+    }
+
+
+    /**
+     * Updates this Rectangle with the dimension and location from the specified Rectangle.
+     *
+     * @param rect The specified Rectangle.
+     *
+     * @return this Rectangle
+     */
+    public Rectangle updateFrom(final Rectangle rect) {
+        x = rect.x;
+        y = rect.y;
+        width = rect.width;
+        height = rect.height;
+
+        return this;
+    }
+
 }
