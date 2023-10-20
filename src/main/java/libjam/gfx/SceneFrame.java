@@ -4,26 +4,25 @@ import libjam.math.Rectangle;
 
 
 /**
- * A SceneFrame provides information about the cutout of a scene that should be considered when rendering this scene.
- * It provides x/y-coordinates and width/height-values for describing the regions of a scene that
- * should be considered for rendering.
- *
- * <pre>
- *     +-----------------------------+
- *     |     +----------------+      |
- *     |     |                |      |
- *     |     |                |      |
- *     |     +--SceneFrame----+      |
- *     |                             |
- *     +----------Scene--------------+
- * </pre>
- *
- *
+ * A SceneFrame provides metrics for the location and dimension that should be used for observing an area.
  */
 public class SceneFrame extends Rectangle {
 
 
-    public SceneFrame(double x, double y, double width, double height) {
+    /**
+     * Creates a new SceneFrame for the specified x/y-coordinates and the specified with and height.
+     *
+     * @param x The x-coordinate of the scene.
+     * @param y The y-coordinate of the scene.
+     * @param width The width of the scene.
+     * @param height The height of the scene.
+     */
+    public SceneFrame(
+        final double x,
+        final double y,
+        final double width,
+        final double height
+    ) {
         super(x, y, width, height);
     }
 }
