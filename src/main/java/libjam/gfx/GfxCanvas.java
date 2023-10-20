@@ -1,156 +1,49 @@
 package libjam.gfx;
 
+import libjam.math.Rectangle;
 
-import libjam.util.Logger;
-
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.util.ArrayList;
-import java.util.List;
-
-public class GfxCanvas extends Canvas implements Runnable, ComponentListener {
 
 
-
-    private Graphics gContext;
-
-    private Image buffer;
-
+public interface GfxCanvas {
 
 
     /**
-     *
+     * @return the most recent CanvasContext representing this GfxCanvas.
      */
-    private List<Drawable> drawableList = new ArrayList<>();
+    CanvasContext getCanvasContext();
 
-
-    public GfxCanvas(int width, int height) {
-        setSize(width, height);
-    }
-
-
-
-    public GfxCanvas addDrawable(Drawable drawable) {
-
-        drawable.setCanvasContext(new CanvasContext(getWidth(), getHeight()));
-        drawableList.add(drawable);
-
-        return this;
-    }
-
-    public boolean updateDrawables() {
-        // image needs to be cleared on resize
-        if (buffer == null) {
-            buffer = createImage(this.getWidth(), this.getHeight());
-
-            if (buffer == null) {
-                Logger.log("buffer not available");
-                return false;
-            } else {
-                gContext = buffer.getGraphics();
-            }
-        }
-
-        gContext.setColor(Color.BLACK);
-        gContext.fillRect(0, 0, this.getWidth(), this.getHeight());
-
-
-        for (Drawable drawable: drawableList) {
-            drawable.draw(gContext);
-        }
-
-        return true;
-    }
-
-    public void updateAndRepaint() {
-
-        updateDrawables();
-        repaint();
-    }
 
     /**
-     * Paint given the current graphic context.
+     * Instructs this GfxCanvas to refresh its metrics.
+     * The associated CanvasContext should be updated if any requirements to do so are met, e.g., the implementing
+     * component was resized.
+     */
+    void refresh();
+
+
+    /**
+     * Paints given the current graphic context.
      *
      * @param g the specified Graphics context
      */
-    public void paint(final Graphics g) {
-
-        if (buffer != null) {
-            g.drawImage(buffer, 0, 0, null);
-        }
-
-
-        // g.drawString("start: " + start + "; end: " + end + "; fps " + (end / 1000), 10, 10);
-    }
-
-
-
-    @Override
-    public void run() {
-        long start, end;
-
-        double fps = 20;
-
-
-        while (true) {
-
-            start  = System.currentTimeMillis();
-
-            updateAndRepaint();
-
-            try {
-                Thread.sleep((int) fps);
-            } catch (InterruptedException ignored) {
-
-            }
-
-            //end  = System.currentTimeMillis();
-        }
-    }
+    void paint(Graphics g);
 
 
     /**
-     * Listener for the component "resize" event.
-     * Takes care of updating this canvas' size and creating a new CanvasContext that gets
-     * passed to all the Drawables this GfxCanvas maintains.
-     *
-     * @param e the event to be processed
+     * @return The SafeArea of this GfxCanvas.
      */
-    @Override
-    public void componentResized(ComponentEvent e) {
+    Rectangle getSafeArea();
 
-        Dimension dim = getSize();
 
-        Logger.log("GfxCanvas: " +  dim.getWidth() + " x " +  dim.getHeight());
+    /**
+     * Adds a new Drawable to this GfxCanvas.
+     * @param drawable
+     *
+     * @return
+     */
+    GfxCanvas addDrawable(Drawable drawable);
 
-        this.setSize(dim);
-        buffer = null;
 
-        for (Drawable drawable: drawableList) {
-            drawable.setCanvasContext(
-                    new CanvasContext((int) dim.getWidth(), (int) dim.getHeight())
-            );
-        }
 
-    }
-
-    @Override
-    public void componentMoved(ComponentEvent e) {
-
-    }
-
-    @Override
-    public void componentShown(ComponentEvent e) {
-
-    }
-
-    @Override
-    public void componentHidden(ComponentEvent e) {
-
-    }
 }
