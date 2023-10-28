@@ -29,7 +29,8 @@ public class DefaultGfxParentTest {
 
         DefaultGfxParent p = new DefaultGfxParent();
 
-        Assertions.assertInstanceOf(GfxParentBase.class, p);
+        Assertions.assertInstanceOf(GfxParent.class, p);
+        Assertions.assertInstanceOf(Parent.class, p);
 
         Assertions.assertEquals(0,  p.getWidth());
         Assertions.assertEquals(0,  p.getHeight());

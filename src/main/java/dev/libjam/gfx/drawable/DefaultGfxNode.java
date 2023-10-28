@@ -6,7 +6,7 @@ import javafx.scene.paint.Color;
 
 
 @SuppressWarnings("checkstyle:RegexpSingleline")
-public class DefaultGfxNode extends GfxNodeBase {
+public class DefaultGfxNode extends GfxNode {
 
 
     @SuppressWarnings("checkstyle:JavadocVariable")
@@ -108,13 +108,4 @@ public class DefaultGfxNode extends GfxNodeBase {
     }
 
 
-    @Override
-    public String toString() {
-        return "GfxNode["
-            + "x:" + x
-            + "; y:" + y
-            + "; width:" + width
-            + "; height: " + height
-            + "]";
-    }
 }

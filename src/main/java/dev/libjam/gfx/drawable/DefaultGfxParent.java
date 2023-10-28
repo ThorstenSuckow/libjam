@@ -3,7 +3,7 @@ package dev.libjam.gfx.drawable;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class DefaultGfxParent extends GfxParentBase {
+public class DefaultGfxParent extends GfxParent {
 
     @SuppressWarnings("checkstyle:JavadocVariable")
     private static final Color BG_COLOR = Color.BLACK;

@@ -28,7 +28,7 @@ public class DefaultGfxNodeTest {
 
         DefaultGfxNode d = new DefaultGfxNode();
 
-        Assertions.assertInstanceOf(GfxNodeBase.class, d);
+        Assertions.assertInstanceOf(GfxNode.class, d);
 
         Assertions.assertEquals(0,  d.getWidth());
         Assertions.assertEquals(0,  d.getHeight());
