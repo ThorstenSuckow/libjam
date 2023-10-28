@@ -5,26 +5,31 @@ import javafx.scene.paint.Color;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.stubbing.Answer;
 
-import static org.mockito.ArgumentMatchers.anyDouble;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
-public class DefaultDrawableTest {
+public class DefaultGfxNodeTest {
 
     @SuppressWarnings("checkstyle:MagicNumber")
     @Test
-    @DisplayName("DefaultDrawable")
-    void testDefaultDrawable() {
+    @DisplayName("DefaultGfxNode")
+    void testDefaultGfxNode() {
 
         final int width = 800;
         final int height = 600;
         final int x = 1;
         final int y = 2;
 
-        DefaultDrawable d = new DefaultDrawable();
+        DefaultGfxNode d = new DefaultGfxNode();
+
+        Assertions.assertInstanceOf(GfxNodeBase.class, d);
+
         Assertions.assertEquals(0,  d.getWidth());
         Assertions.assertEquals(0,  d.getHeight());
         Assertions.assertEquals(0,  d.getX());
@@ -38,13 +43,13 @@ public class DefaultDrawableTest {
         Assertions.assertEquals(y,  d.getY());
 
 
-        d = new DefaultDrawable(width, height);
+        d = new DefaultGfxNode(width, height);
         Assertions.assertEquals(width,  d.getWidth());
         Assertions.assertEquals(height,  d.getHeight());
         Assertions.assertEquals(0,  d.getX());
         Assertions.assertEquals(0,  d.getY());
 
-        d = new DefaultDrawable(x, y, width, height);
+        d = new DefaultGfxNode(x, y, width, height);
         Assertions.assertEquals(width,  d.getWidth());
         Assertions.assertEquals(height,  d.getHeight());
         Assertions.assertEquals(x,  d.getX());
@@ -61,72 +66,34 @@ public class DefaultDrawableTest {
     @DisplayName("visible = false -> draw()")
     void testDrawVisibleFalse() {
 
-        DefaultDrawable d = new DefaultDrawable();
-
+        DefaultGfxNode dSpy =  spy(new DefaultGfxNode());
 
         // not visible
-        Assertions.assertFalse(d.isVisible());
+        Assertions.assertFalse(dSpy.isVisible());
+        Assertions.assertFalse(dSpy.visibleProperty().get());
+
+
         // make sure colors are set
-        d.setBgColor(Color.GREEN);
-        d.setBorderColor(Color.BLUE);
+        dSpy.setBgColor(Color.GREEN);
+        dSpy.setBorderColor(Color.BLUE);
 
 
         // mock Graphics
         GraphicsContext g = mock(GraphicsContext.class);
 
-        // draw
-        d.draw(g);
+        // draw - visible false
+        when(dSpy.drawNode(g)).thenThrow(new AssertionError());
+        dSpy.draw(g);
 
-        verify(g, never()).fillRect(
-            anyDouble(),
-            anyDouble(),
-            anyDouble(),
-            anyDouble()
-        );
+        // draw - visible true
+        reset(dSpy);
+        dSpy.setVisible(true);
+        AtomicBoolean drawn = new AtomicBoolean(false);
+        when(dSpy.drawNode(g)).thenAnswer((Answer) invocation -> {drawn.set(true); return null;});
+        dSpy.draw(g);
+        Assertions.assertTrue(drawn.get());
 
-        verify(g, never()).strokeRect(
-            anyDouble(),
-            anyDouble(),
-            anyDouble(),
-            anyDouble()
-        );
     }
 
-
-    @Test
-    @DisplayName("visible = true -> draw()")
-    void testDrawVisibleTrue() {
-
-        DefaultDrawable d = new DefaultDrawable();
-
-
-        // visible!
-        d.setVisible(true);
-        Assertions.assertTrue(d.isVisible());
-        // make sure colors are set
-        d.setBgColor(Color.GREEN);
-        d.setBorderColor(Color.BLUE);
-
-
-        // mock Graphics
-        GraphicsContext g = mock(GraphicsContext.class);
-
-        // draw
-        d.draw(g);
-
-        verify(g, times(1)).fillRect(
-            anyDouble(),
-            anyDouble(),
-            anyDouble(),
-            anyDouble()
-        );
-
-        verify(g, times(1)).strokeRect(
-            anyDouble(),
-            anyDouble(),
-            anyDouble(),
-            anyDouble()
-        );
-    }
 
 }
