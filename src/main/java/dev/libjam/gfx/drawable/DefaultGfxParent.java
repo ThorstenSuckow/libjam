@@ -82,7 +82,7 @@ public class DefaultGfxParent extends GfxParent {
 
         if (bgColor != null) {
             g.setFill(bgColor);
-            g.fillOval(
+            g.fillRect(
                 xProperty().get(),
                 yProperty().get(),
                 widthProperty().get(),
@@ -92,7 +92,7 @@ public class DefaultGfxParent extends GfxParent {
 
         if (borderColor != null) {
             g.setStroke(borderColor);
-            g.strokeOval(
+            g.strokeRect(
                 xProperty().get(),
                 yProperty().get(),
                 widthProperty().get(),
