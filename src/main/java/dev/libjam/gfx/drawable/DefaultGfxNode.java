@@ -3,10 +3,10 @@ package dev.libjam.gfx.drawable;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-;
+
 
 @SuppressWarnings("checkstyle:RegexpSingleline")
-public class DefaultDrawable extends DrawableBase {
+public class DefaultGfxNode extends GfxNodeBase {
 
 
     @SuppressWarnings("checkstyle:JavadocVariable")
@@ -25,7 +25,7 @@ public class DefaultDrawable extends DrawableBase {
     /**
      * Creates a new GfxDrawable with its height, width, x- and y-coordinate set to 0.
      */
-    public DefaultDrawable() {
+    public DefaultGfxNode() {
         this(0, 0,0,0);
     }
 
@@ -37,7 +37,7 @@ public class DefaultDrawable extends DrawableBase {
      * @param width the specified width
      * @param height the specified height
      */
-    public DefaultDrawable(final double width, final double height) {
+    public DefaultGfxNode(final double width, final double height) {
         this(0,0, width, height);
     }
 
@@ -51,7 +51,7 @@ public class DefaultDrawable extends DrawableBase {
      * @param x the specified x-coordinate
      * @param y the specified y-coordinate
      */
-    public DefaultDrawable(final double x, final double y, final double width, final double height) {
+    public DefaultGfxNode(final double x, final double y, final double width, final double height) {
         this(x, y, width, height, null);
     }
 
@@ -65,30 +65,24 @@ public class DefaultDrawable extends DrawableBase {
      * @param y the specified y-coordinate
      */
     @SuppressWarnings("checkstyle:FinalParameters")
-    public DefaultDrawable(final double x, final double y, final double width, final double height, Color borderColor) {
-
+    public DefaultGfxNode(final double x, final double y, final double width, final double height, Color borderColor) {
         super(x, y, width, height);
-
         this.borderColor = borderColor;
     }
 
-    public GfxDrawable setBgColor (final Color bgColor) {
+    public GfxNode setBgColor (final Color bgColor) {
         this.bgColor = bgColor;
         return this;
     }
 
-    public GfxDrawable setBorderColor (final Color borderColor) {
+    public GfxNode setBorderColor (final Color borderColor) {
         this.borderColor = borderColor;
         return this;
     }
 
 
     @Override
-    public void draw(final GraphicsContext g) {
-
-        if (!this.isVisible()) {
-            return;
-        }
+    protected GfxNode drawNode(final GraphicsContext g) {
 
         if (bgColor != null) {
             g.setFill(bgColor);
@@ -110,12 +104,13 @@ public class DefaultDrawable extends DrawableBase {
             );
         }
 
+        return this;
     }
 
 
     @Override
     public String toString() {
-        return "Drawable["
+        return "GfxNode["
             + "x:" + x
             + "; y:" + y
             + "; width:" + width

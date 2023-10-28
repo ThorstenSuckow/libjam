@@ -4,31 +4,37 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.canvas.GraphicsContext;
 
 
 @SuppressWarnings("checkstyle:RegexpSingleline")
-public abstract class DrawableBase implements GfxDrawable {
+public abstract class GfxNodeBase implements GfxNode {
 
 
     @SuppressWarnings("checkstyle:JavadocVariable")
-    protected DoubleProperty width;
+    protected DoubleProperty width = new SimpleDoubleProperty();
 
     @SuppressWarnings("checkstyle:JavadocVariable")
-    protected DoubleProperty height;
+    protected DoubleProperty height = new SimpleDoubleProperty();
 
     @SuppressWarnings("checkstyle:JavadocVariable")
-    protected DoubleProperty x;
+    protected DoubleProperty x = new SimpleDoubleProperty();
 
     @SuppressWarnings("checkstyle:JavadocVariable")
-    protected DoubleProperty y;
+    protected DoubleProperty y = new SimpleDoubleProperty();
 
     @SuppressWarnings("checkstyle:JavadocVariable")
-    protected BooleanProperty visible;
+    protected BooleanProperty visible = new SimpleBooleanProperty();
+
+    @SuppressWarnings("checkstyle:JavadocVariable")
+    protected GfxParent parent;
+
+
 
     /**
      * Creates a new GfxDrawable with its height, width, x- and y-coordinate set to 0.
      */
-    public DrawableBase() {
+    public GfxNodeBase() {
         this(0, 0, 0, 0);
     }
 
@@ -40,7 +46,7 @@ public abstract class DrawableBase implements GfxDrawable {
      * @param width the specified width
      * @param height the specified height
      */
-    public DrawableBase(final int width, final int height) {
+    public GfxNodeBase(final int width, final int height) {
         this(0, 0, width, height);
     }
 
@@ -54,19 +60,35 @@ public abstract class DrawableBase implements GfxDrawable {
      * @param x the specified x-coordinate
      * @param y the specified y-coordinate
      */
-    public DrawableBase(final double x, final double y, final double width, final double height) {
-        this.width = new SimpleDoubleProperty(width);
-        this.height = new SimpleDoubleProperty(height);
+    public GfxNodeBase(final double x, final double y, final double width, final double height) {
+        this.width.set(width);
+        this.height.set(height);
 
-        this.x = new SimpleDoubleProperty(x);
-        this.y = new SimpleDoubleProperty(y);
-
-        visible = new SimpleBooleanProperty();
+        this.x.set(x);
+        this.y.set(y);
     }
+
+    @Override
+     public void draw(final GraphicsContext g) {
+
+        if (!this.isVisible()) {
+            return;
+        }
+
+        drawNode(g);
+    }
+
+    /**
+     * Draws this GfxDrawable.
+     *
+     * @param g The GraphicsContext that should be used for rendering.
+     * @return this GfxNode
+     */
+    protected abstract GfxNode drawNode(GraphicsContext g);
 
 
     @Override
-    public GfxDrawable setVisible(boolean visible) {
+    public GfxNode setVisible(boolean visible) {
         this.visible.set(visible);
         return this;
     }
@@ -77,25 +99,25 @@ public abstract class DrawableBase implements GfxDrawable {
     }
 
     @Override
-    public GfxDrawable setWidth(double width) {
+    public GfxNode setWidth(double width) {
         this.width.set(width);
         return this;
     }
 
     @Override
-    public GfxDrawable setHeight(double height) {
+    public GfxNode setHeight(double height) {
         this.height.set(height);
         return this;
     }
 
     @Override
-    public GfxDrawable setX(double x) {
+    public GfxNode setX(double x) {
         this.x.set(x);
         return this;
     }
 
     @Override
-    public GfxDrawable setY(double y) {
+    public GfxNode setY(double y) {
         this.y.set(y);
         return this;
     }
@@ -144,5 +166,14 @@ public abstract class DrawableBase implements GfxDrawable {
     @Override
     public DoubleProperty yProperty() {
         return y;
+    }
+
+    public GfxParent getParent() {
+        return parent;
+    }
+
+    public GfxNode setParent(GfxParent parent) {
+        this.parent = parent;
+        return this;
     }
 }
