@@ -5,6 +5,7 @@ import dev.libjam.gfx.drawable.GfxRoot;
 import dev.libjam.gfx.drawable.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,13 @@ public class JavaFxCanvas extends Canvas implements GfxRoot  {
     }
 
     @Override
-    public Parent drawChildren(final GraphicsContext g) {
+    public GfxRoot draw() {
+
+        GraphicsContext g = getGraphicsContext2D();
+
+        g.setFill(Color.BLACK);
+        g.fillRect(0, 0, getWidth(), getHeight());
+
         for (GfxNode child: children) {
             child.draw(g);
         }
