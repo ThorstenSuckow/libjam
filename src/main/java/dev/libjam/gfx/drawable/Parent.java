@@ -1,7 +1,5 @@
 package dev.libjam.gfx.drawable;
 
-import javafx.scene.canvas.GraphicsContext;
-
 import java.util.List;
 
 public interface Parent {
@@ -25,15 +23,6 @@ public interface Parent {
      * @throws IllegalArgumentException if the specified GfxNode is already owned by a parent.
      */
     Parent add(GfxNode node) throws IllegalArgumentException;
-
-
-    /**
-     * Draws the children associated with this GfxDrawable.
-     *
-     * @param g The GraphicsContext that should be used for rendering.
-     * @return this GfxDrawable
-     */
-    Parent drawChildren(GraphicsContext g);
 
 
 }
