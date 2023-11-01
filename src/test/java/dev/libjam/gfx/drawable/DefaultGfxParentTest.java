@@ -71,9 +71,10 @@ public class DefaultGfxParentTest {
         DefaultGfxParent pSpy = spy(new DefaultGfxParent());
 
         // not visible
-        Assertions.assertFalse(pSpy.isVisible());
-        Assertions.assertFalse(pSpy.visibleProperty().get());
+        Assertions.assertTrue(pSpy.isVisible());
+        Assertions.assertTrue(pSpy.visibleProperty().get());
 
+        pSpy.setVisible(false);
 
         // make sure colors are set
         pSpy.setBgColor(Color.GREEN);

@@ -1,7 +1,5 @@
 package dev.libjam.gfx.drawable;
 
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.ArrayList;
@@ -43,13 +41,7 @@ public abstract class GfxParent extends GfxNode implements GfxDrawable, Parent {
      * @param y the specified y-coordinate
      */
     public GfxParent(final double x, final double y, final double width, final double height) {
-        this.width = new SimpleDoubleProperty(width);
-        this.height = new SimpleDoubleProperty(height);
-
-        this.x = new SimpleDoubleProperty(x);
-        this.y = new SimpleDoubleProperty(y);
-
-        visible = new SimpleBooleanProperty();
+        super(x, y, width, height);
     }
 
     @Override
@@ -102,6 +94,7 @@ public abstract class GfxParent extends GfxNode implements GfxDrawable, Parent {
         }
 
         node.setParent(this);
+        node.setVisible(isVisible());
         children.add(node);
         return this;
     }

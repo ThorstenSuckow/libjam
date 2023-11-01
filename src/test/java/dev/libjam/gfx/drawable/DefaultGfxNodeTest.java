@@ -69,9 +69,10 @@ public class DefaultGfxNodeTest {
         DefaultGfxNode dSpy =  spy(new DefaultGfxNode());
 
         // not visible
-        Assertions.assertFalse(dSpy.isVisible());
-        Assertions.assertFalse(dSpy.visibleProperty().get());
+        Assertions.assertTrue(dSpy.isVisible());
+        Assertions.assertTrue(dSpy.visibleProperty().get());
 
+        dSpy.setVisible(false);
 
         // make sure colors are set
         dSpy.setBgColor(Color.GREEN);

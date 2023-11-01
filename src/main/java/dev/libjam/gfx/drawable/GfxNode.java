@@ -25,7 +25,7 @@ public abstract class GfxNode implements GfxDrawable {
     protected DoubleProperty y = new SimpleDoubleProperty();
 
     @SuppressWarnings("checkstyle:JavadocVariable")
-    protected BooleanProperty visible = new SimpleBooleanProperty();
+    protected BooleanProperty visible = new SimpleBooleanProperty(true);
 
     @SuppressWarnings("checkstyle:JavadocVariable")
     protected Parent parent;
@@ -61,6 +61,7 @@ public abstract class GfxNode implements GfxDrawable {
      * @param x the specified x-coordinate
      * @param y the specified y-coordinate
      */
+    @SuppressWarnings("checkstyle:HiddenField")
     public GfxNode(final double x, final double y, final double width, final double height) {
         this.width.set(width);
         this.height.set(height);
