@@ -11,7 +11,7 @@ public interface GfxRoot extends Parent {
      * Requests to draw this GfxRoot along with its children. It is up to the
      * implementing API to decide which GraphicContext to use.
      */
-    GfxRoot draw();
+    void draw();
 
     /**
      *@return the width of this GfxRoot.

@@ -32,16 +32,12 @@ public class JavaFxCanvas extends Canvas implements GfxRoot  {
     }
 
     @Override
-    public GfxRoot draw() {
-
+    public void draw()  {
         GraphicsContext g = getGraphicsContext2D();
-
         g.setFill(Color.BLACK);
         g.fillRect(0, 0, getWidth(), getHeight());
-
         for (GfxNode child: children) {
             child.draw(g);
         }
-        return this;
     }
 }
