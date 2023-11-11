@@ -32,7 +32,7 @@ class SnowFallController implements ObjectLifecycleListener {
         final GfxRoot gfxRoot
     ) {
         this.world = world;
-        world.addObjectLifecycleListener(this);
+    //    world.addObjectLifecycleListener(this);
         this.gfxRoot = gfxRoot;
         snowFlakeRenderer = new SnowFlakeRenderer();
     }
@@ -47,7 +47,7 @@ class SnowFallController implements ObjectLifecycleListener {
         gfxParent = new DefaultGfxParent(0, 0, gfxRoot.getWidth(), gfxRoot.getHeight());
         gfxRoot.add(gfxParent);
 
-        world.addObject(new SnowCloud(0, 0, world.getWidth(), 0));
+        //world.addObject(new SnowCloud(0, 0, world.getWidth(), 0));
     }
 
     private void createAnimation() {
@@ -65,7 +65,6 @@ class SnowFallController implements ObjectLifecycleListener {
 
                 long now = System.nanoTime();
 
-                world.updateObject(now);
                 world.updateWorld(now);
 
                 try {
@@ -80,7 +79,7 @@ class SnowFallController implements ObjectLifecycleListener {
 
     @Override
     public void objectLifecycleChange(ObjectLifecycleEvent evt) {
-        if (evt.getType() == LifecycleType.SPAWNED) {
+      /*  if (evt.getType() == LifecycleType.SPAWNED) {
             Object2D obj = evt.getSource();
 
             SnowFlake node = new SnowFlake(obj, snowFlakeRenderer);
@@ -101,6 +100,6 @@ class SnowFallController implements ObjectLifecycleListener {
 
 
             // linkObjects(obj, node);
-        }
+        }*/
     }
 }

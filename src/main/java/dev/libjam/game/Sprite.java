@@ -71,22 +71,18 @@ public class Sprite extends DefaultGfxNode {
     }
 
 
-    public void destroy() {
-        super.destroy();
-        img = null;
-        obj = null;
-    }
+
 
     public long getMaxAge() {
         return -1;
     }
 
     public long getAge(long time) {
-        return time - created;
+        return obj.getAge(time);
     }
 
     public long getAge() {
-        return System.nanoTime() - created;
+        return obj.getAge();
     }
 
     public boolean shouldExpire(long time) {
@@ -108,7 +104,7 @@ public class Sprite extends DefaultGfxNode {
         return state;
     }
 
-    public void addObjectLifecycleListener(ObjectLifecycleListener listener) {
+   /* public void addObjectLifecycleListener(ObjectLifecycleListener listener) {
         objectLifecycleListeners.add(listener);
     }
 
@@ -116,6 +112,6 @@ public class Sprite extends DefaultGfxNode {
         for (ObjectLifecycleListener lst: objectLifecycleListeners) {
             lst.objectLifecycleChange(new ObjectLifecycleEvent(source, state));
         }
-    }
+    }*/
 
 }

@@ -13,7 +13,6 @@ public class AnimationTimer extends javafx.animation.AnimationTimer {
     @Override
     public void handle(long l) {
 
-        gfxRoot.prepareImg();
         gfxRoot.draw();
     }
 }

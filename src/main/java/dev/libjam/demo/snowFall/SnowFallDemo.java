@@ -24,7 +24,7 @@ public class SnowFallDemo extends Application {
 
         primaryStage.show();
 
-        SnowWorld world = new SnowWorld(0, 0, 800, 600);
+        SnowWorld world = new SnowWorld();
         SnowFallController ctrl = new SnowFallController(world, rootCanvas);
         ctrl.init();
     }

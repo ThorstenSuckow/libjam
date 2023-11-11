@@ -1,5 +1,6 @@
 package dev.libjam.demo.snowFall.gfx;
 
+import dev.libjam.game.Sprite;
 import dev.libjam.game.SpriteRenderer;
 import dev.libjam.gfx.drawable.DefaultGfxNode;
 import dev.libjam.gfx.drawable.GfxNode;
@@ -12,7 +13,7 @@ public class SnowFlakeRenderer implements SpriteRenderer {
 
     private double computeOpacity(GfxNode node) {
 
-        Object2D obj = ((DefaultGfxNode)node).getObject2D();
+        Object2D obj = null;//((DefaultGfxNode)node).getObject2D();
 
         if (obj == null) {
             return 0;
@@ -40,7 +41,7 @@ public class SnowFlakeRenderer implements SpriteRenderer {
         double opacity = computeOpacity(node);
 
         DefaultGfxNode dNode = (DefaultGfxNode)node;
-
+/*
          if (dNode.img == null) {
              dNode.img = new WritableImage((int)Math.ceil(node.getWidth()), (int)Math.ceil(node.getHeight()));
         }
@@ -55,9 +56,13 @@ public class SnowFlakeRenderer implements SpriteRenderer {
             }
         }
 
-        return dNode.img;
+        return dNode.img;*/
+        return null;
     }
 
 
-
+    @Override
+    public WritableImage render(Sprite sprite) {
+        return null;
+    }
 }
