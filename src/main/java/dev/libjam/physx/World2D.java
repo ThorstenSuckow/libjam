@@ -2,6 +2,7 @@ package dev.libjam.physx;
 
 
 import dev.libjam.game.event.ObjectLifecycleListener;
+import dev.libjam.math.Vector2D;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -9,68 +10,80 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
+/**
+ * Represents an abstract world that can contain other objects under the
+ * influence of this worlds physics.
+ * A World2D's owning world is always the World2D itself if no other
+ * owning World2D is specified.
+ */
 public abstract class World2D extends Object2D implements PropertyChangeListener {
 
-    List<Object2D> objects = new ArrayList<Object2D>();
-
-    private final List<ObjectLifecycleListener> objectLifecycleListeners = new ArrayList<>();
+    protected List<Object2D> objects = new ArrayList<Object2D>();
 
 
-    public World2D(double x, double y, double width, double height) {
-        super(x, y, width, height);
-
+    /**
+     * Creates a new World2D with the specified width and height
+     * and will init this World2D's coordinates to 0, and its velocity to
+     * 0.
+     *
+     */
+    public World2D () {
+        super(0, 0);
+        world = this;
+        this.x = 0;
+        this.y = 0;
+        this.velocity = new Vector2D(0, 0);
     }
 
-    void removeObject(final Object2D obj) {
-        if (objects.contains(obj)) {
-            objects.remove(obj);
-            obj.removeObject2DPropertyChangeListener(this);
-        }
 
-    }
-
+    /**
+     * Adds the specified Object2D to this World2D and registers
+     * this World2D as its PropertyChangeListener. Ths World2D will be
+     * set as the owning world of the specified Object2D.
+     *
+     * @param obj The specified Object2D
+     */
     public void addObject(final Object2D obj) {
         if (!objects.contains(obj)) {
             objects.add(obj);
-            obj.addObject2DPropertyChangeListener(this);
+            obj.addPropertyChangeListener(this);
             obj.setWorld(this);
         }
     }
 
+
     /**
-     * should return copy
-     * @return
+     * Removes the specified Object2D from this World2D, also
+     * removing this World2D's as the Object2D's PropertyChangeListener.
+     *
+     * @param obj The specified Object2D to remove.
      */
-    public List<Object2D> getObjects() {
-        return objects;
-    }
-
-    public void updateObject(long time) {
-        List<Object2D> objects = getObjects();
-
-        for (int i = 0; i < getObjects().size(); i++) {
-            objects.get(i).updateObject(time);
+    void removeObject(final Object2D obj) {
+        if (objects.contains(obj)) {
+            objects.remove(obj);
+            obj.removePropertyChangeListener(this);
         }
     }
 
-    public void updateWorld(long time) {
 
-        Object2D obj;
-       /* for (int i = 0; i < objects.size(); i++) {
-            obj = objects.get(i);
-            if (obj.isExpired(time)) {
-                getObjects().remove(obj);
-                this.fireObjectLifecycleEvent(obj, LifecycleType.EXPIRED);
+    /**
+     * Updates this world along with its child objects.
+     *
+     * @param time The specified point in time (in nanoseconds)
+     *            at which this World2D should be updated.
+     */
+    public abstract void updateWorld(long time);
 
-            }
-        }*/
-    }
 
-    public void object2DPropertyChange(final PropertyChangeEvent evt) {
+    /**
+     * Observer for PropertyChangeEvents this World2D is observing.
+     *
+     * @param evt A PropertyChangeEvent object describing the event source
+     *          and the property that has changed.
+     */
+    public void propertyChange(final PropertyChangeEvent evt) {
 
         Object2D obj = (Object2D)evt.getSource();
-
         if (evt.getPropertyName().equals("world")) {
             World2D oldWorld = (World2D) evt.getOldValue();
             if (oldWorld == this) {

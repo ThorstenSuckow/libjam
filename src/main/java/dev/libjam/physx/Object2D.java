@@ -10,33 +10,87 @@ import java.util.List;
 
 /**
  * Object2D represents the model of a physical object in a world with two dimensions.
+ * An instance of this class provides information about the object's location, dimensions
+ * and velocity.
  */
 public class Object2D {
 
-    private double x;
-    private double y;
+    protected double x;
+
+    protected double y;
 
     private long created;
-    private double width;
-    private double height;
-    private Vector2D velocity = new Vector2D(0, 0);
 
-    private World2D world;
+    private double width;
+
+    private double height;
+
+    protected Vector2D velocity;
+
+    protected World2D world;
 
     private final List<PropertyChangeListener> listeners = new ArrayList<>();
 
-    public Object2D(double x, double y, double width, double height) {
-        this.x = x;
-        this.y = y;
+
+    /**
+     * Creates a new Object2D with a null-vector for velocity and it's location-coordinates set to
+     * x=-1, y=-1.
+     *
+     * @param width The width of this Object2D.
+     * @param height The height of this Object2D.
+     */
+    public Object2D(double width, double height) {
+        this.x = -1;
+        this.y = -1;
         this.width = width;
         this.height = height;
-        this.created = System.nanoTime();
+        created = System.nanoTime();
+    }
+
+    /**
+     * Returns the age of this Object2D since it was created relative to the specified time.
+     *
+     * @param time The specified time in nanoseconds
+     *
+     * @return The age of this Object2D in nanoseconds.
+     */
+    public long getAge(long time) {
+        return time - created;
     }
 
 
+    /**
+     * Returns the age of this Object2D since its creation.
+     *
+     * @return The age of this Object2D in nanoseconds.
+     */
+    public long getAge() {
+        return System.nanoTime() - created;
+    }
+
+
+    /**
+     * Associates this Object2D with a World2D-instance. The specified World2D becomes the owner of this Object2D.
+     * Does nothing if the specified World2D is already this Object2D's owner, otherwise fires a PropertyChangeEvent.
+     * If no velocity exists for this Object2D, it will be created here.
+     * If null is specified, any existing World2D as the owning world of this object
+     * will be removed.
+     *
+     * @param world The specified World2D owning this Object2D, or null to remove
+     *              the current owning World2D.
+     */
     public void setWorld(World2D world) {
         World2D oldWorld = this.world;
         this.world = world;
+
+        if (world != null) {
+            x = y = -1;
+            if (world != oldWorld) {
+                velocity = new Vector2D(0, 0);
+            }
+        } else {
+            velocity = null;
+        }
 
         if (world == oldWorld) {
             return;
@@ -46,15 +100,41 @@ public class Object2D {
     }
 
 
+    /**
+     * Returns the owning World2D instance of this Object2D.
+     *
+     * @return null if no World2D owns this Objects2D, otherwise the owning instance.
+     */
     public World2D getWorld() {
         return world;
     }
 
+
+    /**
+     * Returns the x-coordinate of this Object2D relative to its owning world.
+     * Negative values indicate that this Object2D location is out of the bounds of its
+     * owning world, or has no owning World2D at all. This method will always return -1 if this Object2 has no owner.
+     *
+     * @return the x-coordinate of this Object2D relative to its owner, -1 if no owning World2D exists.
+     */
     public double getX() {
-        return x;
+        return world != null ? x : -1;
     }
 
+
+    /**
+     * Sets the x-coordinate of this Objects2D, relative to its owning world. Will do nothing if this
+     * Object2D has no owning World2D, otherwise checks if the value has changed and fire a PropertyChangeEvent
+     * accordingly
+     *
+     * @param x The new x-coordinate of this Object2D relative to its owning world
+     */
     public void setX(double x) {
+
+        if (world == null) {
+            return;
+        }
+
         double oldX = this.x;
         this.x = x;
 
@@ -62,14 +142,29 @@ public class Object2D {
             return;
         }
 
-        fireObject2DPropertyChange("x", oldX, x);
+        firePropertyChange("x", oldX, x);
     }
 
 
+    /**
+     * Returns the y-coordinate of this Object2D relative to its owning world.
+     * Negative values indicate that this Object2D location is out of the bounds of its
+     * owning world, or has no owning World2D at all. This method will always return -1 if this Object2 has no owner.
+     *
+     * @return the x-coordinate of this Object2D relative to its owner, -1 if no owning World2D exists.
+     */
     public double getY() {
-        return y;
+        return world != null ? y : -1;
     }
 
+
+    /**
+     * Sets the y-coordinate of this Object2D, relative to its owning world. Will do nothing if this
+     * Object2D has no owning World2D, otherwise checks if the value has changed and fire a PropertyChangeEvent
+     * accordingly.
+     *
+     * @param y The new y-coordinate of this Object2D relative to its owning world
+     */
     public void setY(double y) {
 
         double oldY = this.y;
@@ -79,10 +174,21 @@ public class Object2D {
            return;
         }
 
-        fireObject2DPropertyChange("y", oldY, y);
+        firePropertyChange("y", oldY, y);
     }
 
+
+    /**
+     * Sets the velocity for this Object2D. Fires a PropertyChangeEvent if the velocity has changed.
+     *
+     * @param x The value of the velocity vectors x-component.
+     * @param y The value of the velocity vectors y-component.
+     */
     public void setVelocity(double x, double y) {
+
+        if (world == null) {
+            return;
+        }
 
         if (velocity.getX() == x && velocity.getY() == y) {
             return;
@@ -91,36 +197,76 @@ public class Object2D {
         Vector2D oldVelocity = velocity.clone();
 
         this.velocity.setXY(x, y);
-        fireObject2DPropertyChange("velocity", oldVelocity, this.velocity);
+        firePropertyChange("velocity", oldVelocity, this.velocity);
     }
 
+
+    /**
+     * Returns the velocity of this object. Returns null if this Object2D has no owning World2D.
+     *
+     * @return The velocity vector for this Object2D, otherwise null if this Object2D has no owning World2D.
+     */
     public Vector2D getVelocity() {
         return velocity;
     }
 
+
+    /**
+     * Returns the width of this Object2D.
+     *
+     * @return the width of this Object2D.
+     */
     public double getWidth() {
         return width;
     }
 
+
+    /**
+     * Returns the height of this Object2D.
+     *
+     * @return the height of this Object2D.
+     */
     public double getHeight() {
         return height;
     }
 
 
-    public void addObject2DPropertyChangeListener(
+    /**
+     * Adds the specified PropertyChangeListener to this Object2D if it was not already registered
+     * as a listener.
+     *
+     * @param listener The specified PropertyChangeListener.
+     */
+    public void addPropertyChangeListener(
         final PropertyChangeListener listener
     ) {
+        if (listeners.contains(listener)) {
+            return;
+        }
         listeners.add(listener);
     }
 
-    public void removeObject2DPropertyChangeListener(
+
+    /**
+     * Removes the specified PropertyChangeListener from the list of this Object2D's PropertyChangeListeners.
+     *
+     * @param listener The specified PropertyChangeListener to remove.
+     */
+    public void removePropertyChangeListener(
         final PropertyChangeListener listener
     ) {
         listeners.remove(listener);
     }
 
 
-    private void fireObject2DPropertyChange(
+    /**
+     * Wraps the attributes and fires them as a PropertyChangeEvent.
+     *
+     * @param property The specified attribute that has changed.
+     * @param oldValue The old value of the specified property.
+     * @param newValue The new value for the specified property.
+     */
+    private void firePropertyChange(
         final String property,
         final Object oldValue,
         final Object newValue
@@ -130,16 +276,4 @@ public class Object2D {
         }
     }
 
-
-    public long getAge(long time) {
-        return time - created;
-    }
-
-    public long getAge() {
-        return System.nanoTime() - created;
-    }
-
-
-    protected void updateObject(long time) {
-    }
 }
