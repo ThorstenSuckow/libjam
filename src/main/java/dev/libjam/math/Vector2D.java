@@ -123,12 +123,21 @@ public class Vector2D implements Cloneable {
      *
      * @return true if the specified Vector2D is considered to be equal to this Vector2D.
      */
-    public boolean equals(Vector2D v) {
-        if (v == null) {
+    public boolean equals(Object v) {
+        if (!(v instanceof Vector2D t)) {
             return false;
         }
 
-        return x == v.getX() && y == v.getY();
+        return x == t.getX() && y == t.getY();
     }
 
+
+    /**
+     * Returns a string representation of this vector.
+     *
+     * @return a string representation of this Vector2D.
+     */
+    public String toString() {
+        return "Vector2D[x:"+ x +",y:"+ y +"]";
+    }
 }
