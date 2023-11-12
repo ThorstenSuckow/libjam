@@ -109,6 +109,22 @@ public class Object2D {
         return world;
     }
 
+    /**
+     * Sets the x-/y-coordinates of this Object2D to the specified values.
+     * Does nothing if this object has no owning World2D.
+     *
+     * @param x The specified x-value
+     * @param y The specified y-value
+     */
+    public void setXY(double x, double y) {
+
+        if (world == null) {
+            return;
+        }
+
+        setX(x);
+        setY(y);
+    }
 
     /**
      * Returns the x-coordinate of this Object2D relative to its owning world.
@@ -196,7 +212,7 @@ public class Object2D {
 
         Vector2D oldVelocity = velocity.clone();
 
-        this.velocity.setXY(x, y);
+        velocity.setXY(x, y);
         firePropertyChange("velocity", oldVelocity, this.velocity);
     }
 
