@@ -94,4 +94,21 @@ public abstract class World2D extends Object2D implements PropertyChangeListener
     }
 
 
+    /**
+     * Checks if the specified world is equal to this World2D.
+     *
+     * @param w The specified world.
+     *
+     * @return true if the specified world is considered to be equal to this world.
+     */
+    public boolean equals (Object w) {
+
+        if (!(w instanceof World2D t)) {
+            return false;
+        }
+
+        return this == w;
+    }
+
+
 }
