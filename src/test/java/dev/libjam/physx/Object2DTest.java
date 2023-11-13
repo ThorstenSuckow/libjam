@@ -15,7 +15,7 @@ import java.util.Vector;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class World2DTest extends World2D {
+class TestWorld2D extends World2D {
 
     @Override
     public void updateWorld(long time) {
@@ -23,7 +23,7 @@ class World2DTest extends World2D {
     }
 }
 
-class PropertyChangeListenerTest implements PropertyChangeListener {
+class TestPropertyChangeListener implements PropertyChangeListener {
 
     List<PropertyChangeEvent> list = new ArrayList<PropertyChangeEvent>();
 
@@ -121,7 +121,7 @@ public class Object2DTest {
 
         Object2D o = new Object2D(0, 0);
 
-        o.setWorld(new World2DTest());
+        o.setWorld(new TestWorld2D());
 
         assertNotNull(o.getVelocity());
         assertEquals(-1, o.getX());
@@ -139,7 +139,7 @@ public class Object2DTest {
         o.setVelocity(1, 2);
         assertTrue(o.getVelocity().equals(new Vector2D(1, 2)));
 
-        o.setWorld(new World2DTest());
+        o.setWorld(new TestWorld2D());
         assertTrue(o.getVelocity().equals(new Vector2D(0, 0)));
         assertEquals(-1, o.getX());
         assertEquals(-1, o.getY());
@@ -157,11 +157,11 @@ public class Object2DTest {
 
         Object2D o = new Object2D(0, 0);
 
-        PropertyChangeListenerTest p = new PropertyChangeListenerTest();
+        TestPropertyChangeListener p = new TestPropertyChangeListener();
 
         o.addPropertyChangeListener(p);
 
-        World2D w = new World2DTest();
+        World2D w = new TestWorld2D();
         o.setWorld(w);
         assertTrue(p.eventMatches(0, "world", o, null, w));
 
