@@ -1,7 +1,5 @@
 package dev.libjam.physx;
 
-
-import dev.libjam.game.event.ObjectLifecycleListener;
 import dev.libjam.math.Vector2D;
 
 import java.beans.PropertyChangeEvent;
@@ -22,9 +20,8 @@ public abstract class World2D extends Object2D implements PropertyChangeListener
 
 
     /**
-     * Creates a new World2D with the specified width and height
-     * and will init this World2D's coordinates to 0, and its velocity to
-     * 0.
+     * Creates a new World2D with its World2D's coordinates to 0, and
+     * its velocity to 0.
      *
      */
     public World2D () {
@@ -90,7 +87,6 @@ public abstract class World2D extends Object2D implements PropertyChangeListener
                 removeObject(obj);
             }
         }
-
     }
 
 
@@ -102,13 +98,10 @@ public abstract class World2D extends Object2D implements PropertyChangeListener
      * @return true if the specified world is considered to be equal to this world.
      */
     public boolean equals (Object w) {
-
         if (!(w instanceof World2D t)) {
             return false;
         }
-
         return this == w;
     }
-
 
 }
