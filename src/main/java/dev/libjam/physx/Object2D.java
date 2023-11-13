@@ -287,8 +287,8 @@ public class Object2D {
         final Object oldValue,
         final Object newValue
     ) {
-        for (PropertyChangeListener l : listeners) {
-            l.propertyChange(new PropertyChangeEvent(this, property, oldValue, newValue));
+        for (int i = 0; i < listeners.size(); i++) {
+            listeners.get(i).propertyChange(new PropertyChangeEvent(this, property, oldValue, newValue));
         }
     }
 
