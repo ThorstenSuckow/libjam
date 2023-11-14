@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.*;
 import java.util.List;
@@ -44,19 +45,30 @@ public class World2DTest {
         World2DImpl w = new World2DImpl();
 
         Object2D obj = new Object2D(0, 0);
+
+        // World2D PropertyChangeListener
+        Field listeners = Object2D.class.getDeclaredField("listeners");
+        listeners.setAccessible(true);
+        List<PropertyChangeListener> propertyChangeListener = (List<PropertyChangeListener>) listeners.get(obj);
+
+        assertFalse(propertyChangeListener.contains(w));
+
         w.addObject(obj);
 
+        assertTrue(propertyChangeListener.contains(w));
 
         Field objects = World2D.class.getDeclaredField("objects");
         objects.setAccessible(true);
-        List<Object2D> l = (List<Object2D>) objects.get(w);
+        List<Object2D> objectList = (List<Object2D>) objects.get(w);
 
-        assertTrue(l.contains(obj));
+        assertTrue(objectList.contains(obj));
         assertEquals(w, obj.getWorld());
 
         obj.setWorld(null);
-        assertFalse(l.contains(obj));
+        assertFalse(objectList.contains(obj));
 
+
+        assertFalse(propertyChangeListener.contains(w));
 
         assertNull(obj.getWorld());
 
