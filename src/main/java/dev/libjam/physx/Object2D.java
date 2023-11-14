@@ -47,6 +47,17 @@ public class Object2D {
         created = System.nanoTime();
     }
 
+
+    /**
+     * Returns the time in nano-seconds when this Object2D was created.
+     *
+     * @return the time in nano-seconds when the Object2D was created.
+     */
+    public long createdAt() {
+        return created;
+    }
+
+
     /**
      * Returns the age of this Object2D since it was created relative to the specified time.
      *

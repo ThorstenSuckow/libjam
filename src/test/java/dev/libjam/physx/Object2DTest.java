@@ -1,17 +1,14 @@
-package dev.libjam.math;
+package dev.libjam.physx;
 
 
-import dev.libjam.physx.Object2D;
-import dev.libjam.physx.World2D;
+import dev.libjam.math.Vector2D;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -90,7 +87,7 @@ public class Object2DTest {
     @SuppressWarnings("checkstyle:MagicNumber")
     @Test
     @DisplayName("Object2D")
-    void Object2D() {
+    void testObject2D() {
 
         Object2D o = new Object2D(4, 5);
         assertEquals(4.0, o.getWidth());
@@ -117,7 +114,7 @@ public class Object2DTest {
 
     @Test
     @DisplayName("Object2D with owning World2D")
-    void object2DwithOwningWorld2D() {
+    void testObject2DwithOwningWorld2D() {
 
         Object2D o = new Object2D(0, 0);
 
@@ -153,7 +150,7 @@ public class Object2DTest {
 
     @Test
     @DisplayName("PropertyChange")
-    void propertyChange() {
+    void testPropertyChange() {
 
         Object2D o = new Object2D(0, 0);
 
@@ -174,8 +171,19 @@ public class Object2DTest {
 
         assertTrue(p.eventMatches(3, "velocity", o, oldV, new Vector2D(4, 5)));
 
+    }
+
+    @Test
+    @DisplayName("createdAt")
+    void testCreatedAt() {
+
+        Object2D o = new Object2D(0 ,0);
+
+        assertTrue(o.createdAt() <= System.nanoTime());
+
 
     }
+
 }
 
 
