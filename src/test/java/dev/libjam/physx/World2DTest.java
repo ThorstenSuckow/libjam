@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.beans.PropertyChangeListener;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.*;
 import java.util.List;
 
@@ -25,7 +24,7 @@ public class World2DTest {
     @SuppressWarnings("checkstyle:MagicNumber")
     @Test
     @DisplayName("World2D")
-    void World2D() {
+    void testWorld2D() {
 
         World2DImpl w = new World2DImpl();
 
@@ -40,7 +39,7 @@ public class World2DTest {
 
     @Test
     @DisplayName("addObject() / remove object")
-    void addObject() throws NoSuchFieldException, IllegalAccessException {
+    void testAddObject() throws NoSuchFieldException, IllegalAccessException {
 
         World2DImpl w = new World2DImpl();
 
@@ -71,6 +70,31 @@ public class World2DTest {
         assertFalse(propertyChangeListener.contains(w));
 
         assertNull(obj.getWorld());
+
+    }
+
+    @Test
+    @DisplayName("equals")
+    void testEquals() {
+
+        World2D w1 = new World2D() {
+            @Override
+            public void updateWorld(long time) {
+
+            }
+        };
+
+        World2D w2 = new World2D() {
+            @Override
+            public void updateWorld(long time) {
+
+            }
+        };
+
+        assertEquals(w1, w1);
+        assertNotEquals(w1, w2);
+
+
 
     }
 
