@@ -1,11 +1,6 @@
 package dev.libjam.demo.snowFall;
 
-import dev.libjam.demo.snowFall.gfx.SnowFlake;
 import dev.libjam.demo.snowFall.gfx.SnowFlakeRenderer;
-import dev.libjam.game.event.LifecycleType;
-import dev.libjam.game.event.ObjectLifecycleEvent;
-import dev.libjam.game.event.ObjectLifecycleListener;
-import dev.libjam.gfx.drawable.DefaultGfxNode;
 import dev.libjam.gfx.drawable.DefaultGfxParent;
 import dev.libjam.gfx.drawable.GfxNode;
 import dev.libjam.gfx.drawable.GfxParent;
@@ -15,7 +10,7 @@ import dev.libjam.physx.Object2D;
 import java.util.HashMap;
 import java.util.Map;
 
-class SnowFallController implements ObjectLifecycleListener {
+class SnowFallController  {
     Map<Object2D, GfxNode> nodesByObjects = new HashMap<>();
 
 
@@ -77,8 +72,7 @@ class SnowFallController implements ObjectLifecycleListener {
         physicUpdate.start();
     }
 
-    @Override
-    public void objectLifecycleChange(ObjectLifecycleEvent evt) {
+    public void objectLifecycleChange() {
       /*  if (evt.getType() == LifecycleType.SPAWNED) {
             Object2D obj = evt.getSource();
 
