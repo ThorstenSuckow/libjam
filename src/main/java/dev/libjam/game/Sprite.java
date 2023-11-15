@@ -1,6 +1,5 @@
 package dev.libjam.game;
 
-import dev.libjam.gfx.drawable.DefaultGfxNode;
 import dev.libjam.gfx.drawable.GfxNode;
 import dev.libjam.physx.Object2D;
 import javafx.scene.canvas.GraphicsContext;
@@ -17,7 +16,7 @@ import java.util.List;
  * The initial LifecycleState of a Sprite is PREPARING.
  */
 @SuppressWarnings("checkstyle:LineLength")
-public class Sprite extends DefaultGfxNode {
+public class Sprite extends GfxNode {
 
     @SuppressWarnings("checkstyle:JavadocVariable")
     private Object2D object2D;
@@ -105,7 +104,7 @@ public class Sprite extends DefaultGfxNode {
     protected GfxNode drawNode(final GraphicsContext g) {
 
         if (renderer != null) {
-            img = this.renderer.render(this);
+            img = renderer.render(this);
         }
 
         if (img != null) {
@@ -158,7 +157,6 @@ public class Sprite extends DefaultGfxNode {
 
     /**
      * Fires a PropertyChangeEvent based on the specified values.
-     *
      *
      * @param propertyName the name of the property that changed.
      * @param oldValue The previous value of the property.
