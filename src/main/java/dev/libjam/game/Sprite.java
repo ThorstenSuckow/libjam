@@ -2,13 +2,10 @@ package dev.libjam.game;
 
 import dev.libjam.gfx.drawable.GfxNode;
 import dev.libjam.physx.Object2D;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.WritableImage;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -28,9 +25,8 @@ public class Sprite extends GfxNode {
     private WritableImage img;
 
     @SuppressWarnings("checkstyle:JavadocVariable")
-    private LifecycleState state;
+    private ReadOnlyObjectWrapper<LifecycleState> lifecycleState;
 
-    private List<PropertyChangeListener> propertyChangeListener = new ArrayList<>();
 
     /**
      * Creates a new Sprite representing the specified Object2D.
@@ -57,7 +53,7 @@ public class Sprite extends GfxNode {
     ) {
         this.object2D = object2D;
         this.renderer = renderer;
-        state = LifecycleState.PREPARING;
+        lifecycleState = new ReadOnlyObjectWrapper<>(this, "lifecycleState", LifecycleState.PREPARING);
     }
 
 
@@ -120,85 +116,44 @@ public class Sprite extends GfxNode {
      *
      * @return the LifecycleState of this Sprite.
      */
-    public LifecycleState getState() {
-        return state;
+    public LifecycleState getLifecycleState() {
+        return lifecycleState.get();
     }
 
 
+    /**
+     * Returns the ReadOnlyObjectProperty that is representing the LifecycleState of this Sprite.
+     *
+     * @return the ReadOnlyObjectProperty representing this Sprite's LifecycleState.
+     */
+    public ReadOnlyObjectProperty<LifecycleState> lifecycleStateProperty() {
+        return lifecycleState.getReadOnlyProperty();
+    }
+
 
     /**
-     * Sets the state of this Sprite to the specified LifecycleState.
-     * Fires a PropertyChangeEvent if a new valid state is detected.
-     * A state may be reset from EXPIRING to LIVING.
+     * Sets the lifecycleState of this Sprite to the specified LifecycleState.
      *
      * @param state The specified LifecycleState.
      *
      * @throws IllegalArgumentException if the ordinal of the new LifecycleState
-     * is less than the previous one and the old state is not EXPIRING and new state
-     * is not LIVING.
+     * is less than the previous one, and the old state is not "EXPIRING" and the new state
+     * is not "LIVING".
      */
-    @SuppressWarnings("checkstyle:HiddenField")
-    public void setState(final LifecycleState state) throws IllegalArgumentException {
+    public void setLifecycleState(final LifecycleState state) throws IllegalArgumentException {
 
-        if (state.ordinal() < this.state.ordinal() && state != LifecycleState.LIVING
-        && this.state != LifecycleState.EXPIRING) {
-            throw new IllegalArgumentException("state \"" + state + "\" not allwed");
+        LifecycleState currentState = lifecycleState.get();
+
+        if (state.ordinal() < currentState.ordinal() && state != LifecycleState.LIVING
+        && currentState != LifecycleState.EXPIRING) {
+            throw new IllegalArgumentException("state \"" + state + "\" not allowed");
         }
 
-        if (state.ordinal() == this.state.ordinal()) {
+        if (state.ordinal() == currentState.ordinal()) {
             return;
         }
 
-        this.state = state;
-
-        firePropertyChange("state", this.state, state);
+        lifecycleState.set(state);
     }
-
-
-    /**
-     * Fires a PropertyChangeEvent based on the specified values.
-     *
-     * @param propertyName the name of the property that changed.
-     * @param oldValue The previous value of the property.
-     * @param newValue The new value of the property.
-     */
-    private void firePropertyChange(
-        final String propertyName,
-        final Object oldValue,
-        final Object newValue
-    ) {
-        PropertyChangeEvent evt = new PropertyChangeEvent(
-                this, propertyName, oldValue, newValue
-        );
-
-        for (int i = 0; i < propertyChangeListener.size(); i++) {
-            propertyChangeListener.get(i).propertyChange(evt);
-        }
-    }
-
-
-    /**
-     * Adds the specified PropertyChangeListener to the list of this Sprite's listeners.
-     *
-     * @param listener The specified PropertyChangeListener to add.
-     */
-    public void addPropertyChangeListener(final PropertyChangeListener listener) {
-
-        if (!propertyChangeListener.contains(listener)) {
-            propertyChangeListener.add(listener);
-        }
-    }
-
-
-    /**
-     * Removes the specified PropertyChangeListener from this Sprite's
-     * list of PropertyChangeListeners.
-     *
-     * @param listener The specified PropertyChangeListener to remove.
-     */
-    public void removePropertyChangeListener(final PropertyChangeListener listener) {
-        propertyChangeListener.remove(listener);
-    }
-
 
 }

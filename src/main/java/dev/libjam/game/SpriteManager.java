@@ -1,5 +1,8 @@
 package dev.libjam.game;
 
+import javafx.beans.Observable;
+import javafx.beans.property.ReadOnlyObjectProperty;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -11,27 +14,24 @@ public class SpriteManager  {
 
     public void unregisterSprite(Sprite sp) {
         sp.getObject2D().removePropertyChangeListener(this::object2DPropertyChange);
-        sp.removePropertyChangeListener(this::spritePropertyChange);
     }
 
     public void registerSprite(Sprite sp) {
         sp.getObject2D().addPropertyChangeListener(this::object2DPropertyChange);
-        sp.addPropertyChangeListener(this::spritePropertyChange);
+        sp.lifecycleStateProperty().addListener(this::spriteLifecycleChange);
     }
 
-    private void spritePropertyChange(PropertyChangeEvent evt) {
+    private void spriteLifecycleChange(final Observable observable, Object oldValue, Object newValue) {
 
-        if (!(evt.getSource() instanceof Sprite sp)) {
-            throw new IllegalArgumentException();
-        }
+        ReadOnlyObjectProperty<LifecycleState> lifecycleState = (ReadOnlyObjectProperty<LifecycleState>) observable;
 
-        if (evt.getPropertyName() == "state") {
-            if (evt.getNewValue() == LifecycleState.VOID) {
-                sp.removePropertyChangeListener(this::spritePropertyChange);
-                sp.getObject2D().removePropertyChangeListener(this::object2DPropertyChange);
-            }
+        Sprite sprite = (Sprite)lifecycleState.getBean();
+
+        if (newValue == LifecycleState.VOID) {
+            sprite.getObject2D().removePropertyChangeListener(this::object2DPropertyChange);
         }
     }
+
 
     private void object2DPropertyChange(PropertyChangeEvent evt) {
         if (evt.getPropertyName() == "y") {
