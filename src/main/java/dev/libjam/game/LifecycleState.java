@@ -15,7 +15,7 @@ public enum LifecycleState {
     PREPARING,
 
     /**
-     * This state indicates that an object is spawning0 This means it
+     * This state indicates that an object is spawning. This means it
      * can be rendered or has already been rendered.
      */
     SPAWNING,
@@ -28,13 +28,13 @@ public enum LifecycleState {
 
     /**
      * EXPIRING indicates that an object is about to be removed. This
-     * state should be vetoable before the object's state is VOID.
+     * state can be vetoed before the object's state is VOID.
      */
     EXPIRING,
 
     /**
      * The object is removed and cannot be reconstructed for rendering,
-     * it ceases to exist.
+     * ready to be picked up by teh GC.
      */
     VOID
 
