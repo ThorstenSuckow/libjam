@@ -3,30 +3,39 @@ package dev.libjam.demo.snowFall;
 import dev.libjam.physx.Object2D;
 import dev.libjam.physx.World2D;
 
-import java.beans.PropertyChangeEvent;
 
 public class SnowWorld extends World2D {
 
     long lastUpdate;
 
+    public SnowWorld(int width, int height) {
+        super(width, height);
+    }
 
 
     @Override
     public void updateWorld(long time) {
 
-        for (Object2D obj:objects) {
+        for (int i = 0; i < objects.size(); i++) {
+            Object2D obj = objects.get(i);
 
+             obj.updateObject(time);
+        }
 
-            if (obj.getY() > (getHeight()- 40)  - obj.getHeight()) {
+        for (int i = 0; i < objects.size(); i++) {
+
+            Object2D obj = objects.get(i);
+
+           // obj.updateObject(time);
+
+           /* if (obj.getY() > (getHeight()- 40)  - obj.getHeight()) {
                 obj.setVelocity(0, 0);
                 obj.setY((getHeight() - 40) - obj.getHeight());
-            }
+            }*/
 
             updatePosition(obj, time);
 
-
             randomizeMovement(obj, time);
-
 
             lastUpdate = time;
         }
@@ -49,12 +58,9 @@ public class SnowWorld extends World2D {
         double x = obj.getVelocity().getX();
         double y = obj.getVelocity().getY();
 
-        obj.setX((obj.getX() + x) % getWidth());
+      //  obj.setX((obj.getX() + x) % getWidth());
         obj.setY((obj.getY() + y));
+        System.out.println(obj.getX() + " " + obj.getY() + " " + getWidth() + " " + x + " " + y);
     }
 
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-
-    }
 }

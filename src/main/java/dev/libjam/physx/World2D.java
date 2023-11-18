@@ -18,6 +18,8 @@ public abstract class World2D extends Object2D implements PropertyChangeListener
 
     protected List<Object2D> objects = new ArrayList<Object2D>();
 
+    protected List<WorldEventListener> worldEventListeners = new ArrayList<WorldEventListener>();
+
 
     /**
      * Creates a new World2D with its World2D's coordinates to 0, and
@@ -56,6 +58,7 @@ public abstract class World2D extends Object2D implements PropertyChangeListener
             objects.add(obj);
             obj.addPropertyChangeListener(this);
             obj.setWorld(this);
+            fireEvent("add", obj);
         }
     }
 
@@ -129,5 +132,24 @@ public abstract class World2D extends Object2D implements PropertyChangeListener
         }
         return this == w;
     }
+
+
+    protected void fiveEvent(WorldEvent evt, String type) {
+        int len = worldEventListeners.size();
+        if (type == "add") {
+            for (int i = 0; i < len; i++) {
+                worldEventListeners.object2DAdded(evt);
+            }
+        }
+    }
+
+    public void addWorldEventListener(WorldEventListener wel) {
+        worldEventListeners.add(pcl);
+    }
+
+    public void removeWorldEventListener(WorldEventListener wel) {
+        worldEventListeners.remove(pcl);
+    }
+
 
 }
