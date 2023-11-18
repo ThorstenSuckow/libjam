@@ -1,6 +1,10 @@
 package dev.libjam.physx;
 
 import dev.libjam.math.Vector2D;
+import dev.libjam.physx.event.Object2DAddedEvent;
+import dev.libjam.physx.event.Object2DRemovedEvent;
+import dev.libjam.physx.event.World2DEvent;
+import dev.libjam.physx.event.World2DEventListener;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -17,6 +21,8 @@ import java.util.List;
 public abstract class World2D extends Object2D implements PropertyChangeListener {
 
     protected List<Object2D> objects = new ArrayList<Object2D>();
+
+    protected List<World2DEventListener> world2DEventListeners = new ArrayList<World2DEventListener>();
 
 
     /**
@@ -56,6 +62,7 @@ public abstract class World2D extends Object2D implements PropertyChangeListener
             objects.add(obj);
             obj.addPropertyChangeListener(this);
             obj.setWorld(this);
+            fireEvent(new Object2DAddedEvent(this, obj));
         }
     }
 
@@ -70,6 +77,7 @@ public abstract class World2D extends Object2D implements PropertyChangeListener
         if (objects.contains(obj)) {
             objects.remove(obj);
             obj.removePropertyChangeListener(this);
+            fireEvent(new Object2DRemovedEvent(this, obj));
         }
     }
 
@@ -123,11 +131,52 @@ public abstract class World2D extends Object2D implements PropertyChangeListener
      *
      * @return true if the specified world is considered to be equal to this world.
      */
-    public boolean equals (Object w) {
+    public boolean equals(final Object w) {
         if (!(w instanceof World2D t)) {
             return false;
         }
         return this == w;
     }
+
+
+    /**
+     * Fires the specified World2DEvent.
+     *
+     * @param evt The specified World2DEvent.
+     */
+    private void fireEvent(final World2DEvent evt) {
+        int len = world2DEventListeners.size();
+        if (evt instanceof Object2DAddedEvent addEvt) {
+            for (int i = 0; i < len; i++) {
+                world2DEventListeners.get(i).object2DAdded(addEvt);
+            }
+        } else if (evt instanceof Object2DRemovedEvent removedEvt) {
+            for (int i = 0; i < len; i++) {
+                world2DEventListeners.get(i).object2DRemoved(removedEvt);
+            }
+
+        }
+    }
+
+
+    /**
+     * Adds the specified World2DEventListener to this World2D.
+     *
+     * @param wel the specified World2DEventListener
+     */
+    public void addWorld2DEventListener(final World2DEventListener wel) {
+        world2DEventListeners.add(wel);
+    }
+
+
+    /**
+     * Removes the specified Worl2DEventListener from this World2D.
+     *
+     * @param wel The specified World2DEventListener to remove from this world.
+     */
+    public void removeWorld2DEventListener(final World2DEventListener wel) {
+        world2DEventListeners.remove(wel);
+    }
+
 
 }

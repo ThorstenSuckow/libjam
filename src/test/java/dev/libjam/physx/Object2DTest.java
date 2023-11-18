@@ -100,20 +100,20 @@ public class Object2DTest {
         // no functionality expected here other than public method exists
         o.updateObject(1);
 
-        assertNull(o.getVelocity());
-        assertEquals(-1, o.getX());
-        assertEquals(-1, o.getY());
+        assertNotNull(o.getVelocity());
+        assertEquals(0, o.getX());
+        assertEquals(0, o.getY());
         assertTrue(o.getAge() > 0);
 
         assertTrue(o.getAge(System.nanoTime()) > 0);
 
         o.setX(100);
-        assertEquals(-1, o.getX());
+        assertEquals(100, o.getX());
         o.setY(100);
-        assertEquals(-1, o.getY());
+        assertEquals(100, o.getY());
 
         o.setVelocity(1, 1);
-        assertNull(o.getVelocity());
+        assertEquals(new Vector2D(1, 1), o.getVelocity());
     }
 
 
@@ -126,8 +126,8 @@ public class Object2DTest {
         o.setWorld(new TestWorld2D());
 
         assertNotNull(o.getVelocity());
-        assertEquals(-1, o.getX());
-        assertEquals(-1, o.getY());
+        assertEquals(0, o.getX());
+        assertEquals(0, o.getY());
 
         o.setX(100);
         assertEquals(100, o.getX());
@@ -142,14 +142,14 @@ public class Object2DTest {
         assertTrue(o.getVelocity().equals(new Vector2D(1, 2)));
 
         o.setWorld(new TestWorld2D());
-        assertTrue(o.getVelocity().equals(new Vector2D(0, 0)));
-        assertEquals(-1, o.getX());
-        assertEquals(-1, o.getY());
+        assertTrue(o.getVelocity().equals(new Vector2D(1, 2)));
+        assertEquals(300, o.getX());
+        assertEquals(400, o.getY());
 
         o.setWorld(null);
-        assertNull(o.getVelocity());
-        assertEquals(-1, o.getX());
-        assertEquals(-1, o.getY());
+        assertNotNull(o.getVelocity());
+        assertEquals(300, o.getX());
+        assertEquals(400, o.getY());
     }
 
 
@@ -168,8 +168,8 @@ public class Object2DTest {
         assertTrue(p.eventMatches(0, "world", o, null, w));
 
         o.setXY(1, 2);
-        assertTrue(p.eventMatches(1, "x", o, -1d, 1d));
-        assertTrue(p.eventMatches(2, "y", o, -1d, 2d));
+        assertTrue(p.eventMatches(1, "x", o, 0d, 1d));
+        assertTrue(p.eventMatches(2, "y", o, 0d, 2d));
 
         Vector2D oldV = o.getVelocity().clone();
         o.setVelocity(4, 5);

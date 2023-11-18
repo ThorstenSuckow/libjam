@@ -4,6 +4,7 @@ import dev.libjam.math.Vector2D;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,19 +30,20 @@ public class Object2D {
 
     protected World2D world;
 
-    private final List<PropertyChangeListener> listeners = new ArrayList<>();
+    private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
 
     /**
-     * Creates a new Object2D with a null-vector for velocity and it's location-coordinates set to
-     * x=-1, y=-1.
+     * Creates a new Object2D with a Velocity-vector with both components set to 0 and the Object2D's
+     * location-coordinates set to 0.
      *
      * @param width The width of this Object2D.
      * @param height The height of this Object2D.
      */
     public Object2D(double width, double height) {
-        this.x = -1;
-        this.y = -1;
+        this.x = 0;
+        this.y = 0;
+        velocity = new Vector2D(0, 0);
         this.width = width;
         this.height = height;
         created = System.nanoTime();
@@ -81,27 +83,19 @@ public class Object2D {
 
 
     /**
-     * Associates this Object2D with a World2D-instance. The specified World2D becomes the owner of this Object2D.
-     * Does nothing if the specified World2D is already this Object2D's owner, otherwise fires a PropertyChangeEvent.
-     * If no velocity exists for this Object2D, it will be created here.
+     * Associates this Object2D with a World2D-instance. The specified World2D becomes the owner
+     * of this Object2D.
+     * Does nothing if the specified World2D is already this Object2D's owner, otherwise fires
+     * a PropertyChangeEvent.
      * If null is specified, any existing World2D as the owning world of this object
      * will be removed.
      *
      * @param world The specified World2D owning this Object2D, or null to remove
      *              the current owning World2D.
      */
-    public void setWorld(World2D world) {
+    public void setWorld(final World2D world) {
         World2D oldWorld = this.world;
         this.world = world;
-
-        if (world != null) {
-            x = y = -1;
-            if (world != oldWorld) {
-                velocity = new Vector2D(0, 0);
-            }
-        } else {
-            velocity = null;
-        }
 
         if (world == oldWorld) {
             return;
@@ -120,47 +114,36 @@ public class Object2D {
         return world;
     }
 
+
     /**
      * Sets the x-/y-coordinates of this Object2D to the specified values.
-     * Does nothing if this object has no owning World2D.
      *
      * @param x The specified x-value
      * @param y The specified y-value
      */
     public void setXY(double x, double y) {
-
-        if (world == null) {
-            return;
-        }
-
         setX(x);
         setY(y);
     }
 
     /**
-     * Returns the x-coordinate of this Object2D relative to its owning world.
-     * Negative values indicate that this Object2D location is out of the bounds of its
-     * owning world, or has no owning World2D at all. This method will always return -1 if this Object2 has no owner.
+     * Returns the desired x-coordinate of this Object2D relative to its owning world, if any.
      *
-     * @return the x-coordinate of this Object2D relative to its owner, -1 if no owning World2D exists.
+     * @return the desired x-coordinate of this Object2D relative to its owner.
      */
     public double getX() {
-        return world != null ? x : -1;
+        return x;
     }
 
 
     /**
-     * Sets the x-coordinate of this Objects2D, relative to its owning world. Will do nothing if this
-     * Object2D has no owning World2D, otherwise checks if the value has changed and fire a PropertyChangeEvent
+     * Sets the x-coordinate of this Objects2D, relative to its owning world.
+     * Checks if the value has changed and fires a PropertyChangeEvent
      * accordingly
      *
-     * @param x The new x-coordinate of this Object2D relative to its owning world
+     * @param x The desired x-coordinate of this Object2D relative to its owning world.
      */
     public void setX(double x) {
-
-        if (world == null) {
-            return;
-        }
 
         double oldX = this.x;
         this.x = x;
@@ -174,25 +157,22 @@ public class Object2D {
 
 
     /**
-     * Returns the y-coordinate of this Object2D relative to its owning world.
-     * Negative values indicate that this Object2D location is out of the bounds of its
-     * owning world, or has no owning World2D at all. This method will always return -1 if this Object2 has no owner.
+     * Returns the desired y-coordinate of this Object2D relative to its owning world, if any.
      *
-     * @return the x-coordinate of this Object2D relative to its owner, -1 if no owning World2D exists.
+     * @return the desired x-coordinate of this Object2D relative to its owner.
      */
     public double getY() {
-        return world != null ? y : -1;
+        return y;
     }
 
 
     /**
-     * Sets the y-coordinate of this Object2D, relative to its owning world. Will do nothing if this
-     * Object2D has no owning World2D, otherwise checks if the value has changed and fire a PropertyChangeEvent
-     * accordingly.
+     * Sets the desired y-coordinate of this Object2D, relative to its owning world, if any.
+     * Checks if the value has changed and fires a PropertyChangeEvent accordingly.
      *
-     * @param y The new y-coordinate of this Object2D relative to its owning world
+     * @param y The new y-coordinate of this Object2D relative to its owning world, if any.
      */
-    public void setY(double y) {
+    public void setY(final double y) {
 
         double oldY = this.y;
         this.y = y;
@@ -211,11 +191,7 @@ public class Object2D {
      * @param x The value of the velocity vectors x-component.
      * @param y The value of the velocity vectors y-component.
      */
-    public void setVelocity(double x, double y) {
-
-        if (world == null) {
-            return;
-        }
+    public void setVelocity(final double x, final double y) {
 
         if (velocity.getX() == x && velocity.getY() == y) {
             return;
@@ -229,9 +205,9 @@ public class Object2D {
 
 
     /**
-     * Returns the velocity of this object. Returns null if this Object2D has no owning World2D.
+     * Returns the velocity of this object.
      *
-     * @return The velocity vector for this Object2D, otherwise null if this Object2D has no owning World2D.
+     * @return The velocity vector for this Object2D. may be null.
      */
     public Vector2D getVelocity() {
         return velocity;
@@ -267,10 +243,7 @@ public class Object2D {
     public void addPropertyChangeListener(
         final PropertyChangeListener listener
     ) {
-        if (listeners.contains(listener)) {
-            return;
-        }
-        listeners.add(listener);
+        propertyChangeSupport.addPropertyChangeListener(listener);
     }
 
 
@@ -282,7 +255,7 @@ public class Object2D {
     public void removePropertyChangeListener(
         final PropertyChangeListener listener
     ) {
-        listeners.remove(listener);
+        propertyChangeSupport.removePropertyChangeListener(listener);
     }
 
 
@@ -298,9 +271,9 @@ public class Object2D {
         final Object oldValue,
         final Object newValue
     ) {
-        for (int i = 0; i < listeners.size(); i++) {
-            listeners.get(i).propertyChange(new PropertyChangeEvent(this, property, oldValue, newValue));
-        }
+        propertyChangeSupport.firePropertyChange(
+                new PropertyChangeEvent(this, property, oldValue, newValue)
+        );
     }
 
 
@@ -309,7 +282,7 @@ public class Object2D {
      *
      * @param time The point in time where this Object2D should get updated.
      */
-    public void updateObject(long time) {
+    public void updateObject(final long time) {
     }
 
 

@@ -1,4 +1,4 @@
-package dev.libjam.demo.snowFall.gfx;
+package dev.libjam.demo.snowFall.game;
 
 import dev.libjam.game.Sprite;
 import dev.libjam.game.SpriteRenderer;
@@ -6,10 +6,14 @@ import dev.libjam.gfx.drawable.DefaultGfxNode;
 import dev.libjam.gfx.drawable.GfxNode;
 import dev.libjam.physx.Object2D;
 import javafx.scene.image.WritableImage;
-import javafx.scene.paint.Color;
 
 public class SnowFlakeRenderer implements SpriteRenderer {
 
+    private SnowFlakePool snowFlakePool;
+
+    public SnowFlakeRenderer(SnowFlakePool snowFlakePool) {
+        this.snowFlakePool = snowFlakePool;
+    }
 
     private double computeOpacity(GfxNode node) {
 
@@ -57,12 +61,14 @@ public class SnowFlakeRenderer implements SpriteRenderer {
         }
 
         return dNode.img;*/
-        return null;
+
+        return snowFlakePool.get(3);
+
     }
 
 
     @Override
     public WritableImage render(Sprite sprite) {
-        return null;
+        return snowFlakePool.get(3);
     }
 }

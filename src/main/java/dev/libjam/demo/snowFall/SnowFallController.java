@@ -1,7 +1,9 @@
 package dev.libjam.demo.snowFall;
 
-import dev.libjam.demo.snowFall.gfx.SnowFlakeRenderer;
-import dev.libjam.gfx.drawable.DefaultGfxParent;
+import dev.libjam.demo.snowFall.game.SnowFlakePool;
+import dev.libjam.demo.snowFall.game.SnowFlakeRenderer;
+import dev.libjam.game.SpriteLayer;
+import dev.libjam.game.SpriteManager;
 import dev.libjam.gfx.drawable.GfxNode;
 import dev.libjam.gfx.drawable.GfxParent;
 import dev.libjam.gfx.drawable.GfxRoot;
@@ -27,9 +29,7 @@ class SnowFallController  {
         final GfxRoot gfxRoot
     ) {
         this.world = world;
-    //    world.addObjectLifecycleListener(this);
         this.gfxRoot = gfxRoot;
-        snowFlakeRenderer = new SnowFlakeRenderer();
     }
 
     public void init() {
@@ -39,10 +39,21 @@ class SnowFallController  {
     }
 
     private void createObjects() {
-        gfxParent = new DefaultGfxParent(0, 0, gfxRoot.getWidth(), gfxRoot.getHeight());
+
+        int size = 100_000;
+
+        SnowFlakePool snowFlakePool = new SnowFlakePool(size);
+        snowFlakePool.init();
+
+        snowFlakeRenderer = new SnowFlakeRenderer(snowFlakePool);
+
+
+        SpriteManager mng = new SpriteManager();
+
+        gfxParent = new SpriteLayer(0, 0, gfxRoot.getWidth(), gfxRoot.getHeight());
         gfxRoot.add(gfxParent);
 
-        //world.addObject(new SnowCloud(0, 0, world.getWidth(), 0));
+        world.addObject(new SnowCloud(world.getWidth(), 0, mng, snowFlakeRenderer, gfxParent));
     }
 
     private void createAnimation() {
@@ -52,13 +63,13 @@ class SnowFallController  {
 
     private void createPhysics() {
 
-
-
         Thread physicUpdate = new Thread(() -> {
 
             while (true) {
 
                 long now = System.nanoTime();
+
+
 
                 world.updateWorld(now);
 
@@ -72,28 +83,5 @@ class SnowFallController  {
         physicUpdate.start();
     }
 
-    public void objectLifecycleChange() {
-      /*  if (evt.getType() == LifecycleType.SPAWNED) {
-            Object2D obj = evt.getSource();
 
-            SnowFlake node = new SnowFlake(obj, snowFlakeRenderer);
-            //node.setWidth(obj.getWidth()).setHeight(obj.getHeight()).setX(obj.getX());
-            gfxParent.add(node);
-            // linkObjects(obj, node);
-        }
-
-        if (evt.getType() == LifecycleType.EXPIRED) {
-            Object2D obj = evt.getSource();
-
-            for (int i = 0; i < gfxParent.getChildren().size(); i++) {
-                if (((DefaultGfxNode)gfxParent.getChildren().get(i)).obj == obj) {
-
-                    gfxParent.remove(gfxParent.getChildren().get(i));
-                }
-            }
-
-
-            // linkObjects(obj, node);
-        }*/
-    }
 }
