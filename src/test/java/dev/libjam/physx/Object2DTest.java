@@ -10,7 +10,11 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class TestWorld2D extends World2D {
 
@@ -93,6 +97,8 @@ public class Object2DTest {
         assertEquals(4.0, o.getWidth());
         assertEquals(5.0, o.getHeight());
 
+        // no functionality expected here other than public method exists
+        o.updateObject(1);
 
         assertNull(o.getVelocity());
         assertEquals(-1, o.getX());
@@ -108,7 +114,6 @@ public class Object2DTest {
 
         o.setVelocity(1, 1);
         assertNull(o.getVelocity());
-
     }
 
 

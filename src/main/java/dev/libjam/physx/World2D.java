@@ -25,7 +25,18 @@ public abstract class World2D extends Object2D implements PropertyChangeListener
      *
      */
     public World2D () {
-        super(0, 0);
+        this(0, 0);
+    }
+
+
+    /**
+     * Creates a new World2D with the specified width and height.
+     *
+     * @param width the specified width of this World2D.
+     * @param height the specified height of this World2D.
+     */
+    public World2D(int width, int height) {
+        super(width, height);
         world = this;
         this.x = 0;
         this.y = 0;
@@ -59,6 +70,21 @@ public abstract class World2D extends Object2D implements PropertyChangeListener
         if (objects.contains(obj)) {
             objects.remove(obj);
             obj.removePropertyChangeListener(this);
+        }
+    }
+
+
+    /**
+     * Updates this world along with its child objects in regard to arbitrary data or behavior.
+     *
+     * @param time The specified point in time (in nanoseconds)
+     *            at which this World2D should be updated.
+     */
+    public void updateObject(long time) {
+
+        int len = objects.size();
+        for (int i = 0; i < len; i++) {
+            objects.get(i).updateObject(time);
         }
     }
 
