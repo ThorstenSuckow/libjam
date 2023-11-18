@@ -4,14 +4,31 @@ import dev.libjam.math.Vector2D;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.beans.PropertyChangeListener;
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 class World2DImpl extends World2D {
+
+    public World2DImpl() {
+        super();
+    }
+
+
+    public World2DImpl(int i, int i1) {
+        super(i, i1);
+    }
+
     @Override
     public void updateWorld(long time) {
 
@@ -27,12 +44,19 @@ public class World2DTest {
     void testWorld2D() {
 
         World2DImpl w = new World2DImpl();
-
         assertEquals(w, w.getWorld());
-
+        assertEquals(0, w.getWidth());
+        assertEquals(0, w.getHeight());
         assertEquals(0, w.getX());
         assertEquals(0, w.getY());
+        assertEquals(w.getVelocity(), new Vector2D(0, 0));
 
+        w = new World2DImpl(800, 600);
+        assertEquals(w, w.getWorld());
+        assertEquals(800, w.getWidth());
+        assertEquals(600, w.getHeight());
+        assertEquals(0, w.getX());
+        assertEquals(0, w.getY());
         assertEquals(w.getVelocity(), new Vector2D(0, 0));
     }
 
@@ -70,7 +94,6 @@ public class World2DTest {
         assertFalse(propertyChangeListener.contains(w));
 
         assertNull(obj.getWorld());
-
     }
 
     @Test
@@ -93,9 +116,22 @@ public class World2DTest {
 
         assertEquals(w1, w1);
         assertNotEquals(w1, w2);
+    }
 
 
+    @Test
+    @DisplayName("updateObject")
+    void testUpdateObject() {
 
+        World2D world = new World2DImpl();
+
+        // mock Object2D
+        Object2D obj = mock(Object2D.class);
+        world.addObject(obj);
+
+        world.updateObject(1);
+
+        verify(obj, atLeast(1)).updateObject(eq(1L));
     }
 
 }
