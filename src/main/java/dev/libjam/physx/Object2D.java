@@ -303,4 +303,22 @@ public class Object2D {
         }
     }
 
+
+    /**
+     * Allows this Object2D to be updated with arbitrary data.
+     *
+     * @param time The point in time where this Object2D should get updated.
+     */
+    public void updateObject(long time) {
+    }
+
+
+    /**
+     * Returns a String representation of this Object2D.
+     *
+     * @return A String representation of this Object2D
+     */
+    public String toString() {
+        return "[" + getClass() + "]x: " + getX() + "; y: " + getY() + "; " + getWidth() + "; " + getHeight();
+    }
 }
