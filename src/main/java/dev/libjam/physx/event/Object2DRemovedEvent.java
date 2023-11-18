@@ -45,7 +45,7 @@ public class Object2DRemovedEvent extends World2DEvent {
      */
     public boolean equals(final Object obj) {
 
-        if (!(obj instanceof dev.libjam.physx.event.Object2DAddedEvent evt)) {
+        if (!(obj instanceof Object2DRemovedEvent evt)) {
             return false;
         }
 
