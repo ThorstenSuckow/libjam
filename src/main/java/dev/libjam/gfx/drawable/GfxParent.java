@@ -62,9 +62,12 @@ public abstract class GfxParent extends GfxNode implements GfxDrawable, Parent {
      * @return this GfxDrawable
      */
     public GfxParent drawChildren(final GraphicsContext g) {
-        for (GfxNode child: children) {
-            child.draw(g);
+
+        int len = children.size();
+        for (int i = 0; i < len; i++) {
+            children.get(i).draw(g);
         }
+
         return this;
     }
 
