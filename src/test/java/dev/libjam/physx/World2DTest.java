@@ -1,11 +1,17 @@
 package dev.libjam.physx;
 
 import dev.libjam.math.Vector2D;
+import dev.libjam.physx.event.Object2DAddedEvent;
+import dev.libjam.physx.event.Object2DRemovedEvent;
+import dev.libjam.physx.event.World2DEventListener;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -67,18 +74,25 @@ public class World2DTest {
 
         World2DImpl w = new World2DImpl();
 
+        World2DEventListener world2DEventListener = mock(World2DEventListener.class);
+        w.addWorld2DEventListener(world2DEventListener);
+
         Object2D obj = new Object2D(0, 0);
 
         // World2D PropertyChangeListener
-        Field listeners = Object2D.class.getDeclaredField("listeners");
+        Field listeners = Object2D.class.getDeclaredField("propertyChangeSupport");
         listeners.setAccessible(true);
-        List<PropertyChangeListener> propertyChangeListener = (List<PropertyChangeListener>) listeners.get(obj);
+        PropertyChangeSupport propertyChangeSupport = (PropertyChangeSupport) listeners.get(obj);
 
-        assertFalse(propertyChangeListener.contains(w));
+        assertFalse(Arrays.asList(propertyChangeSupport.getPropertyChangeListeners()).contains(w));
 
         w.addObject(obj);
 
-        assertTrue(propertyChangeListener.contains(w));
+        verify(world2DEventListener, Mockito.atLeastOnce()).object2DAdded(
+                eq(new Object2DAddedEvent(w, obj))
+        );
+
+        assertTrue(Arrays.asList(propertyChangeSupport.getPropertyChangeListeners()).contains(w));
 
         Field objects = World2D.class.getDeclaredField("objects");
         objects.setAccessible(true);
@@ -90,8 +104,11 @@ public class World2DTest {
         obj.setWorld(null);
         assertFalse(objectList.contains(obj));
 
+        assertFalse(Arrays.asList(propertyChangeSupport.getPropertyChangeListeners()).contains(w));
 
-        assertFalse(propertyChangeListener.contains(w));
+        verify(world2DEventListener, Mockito.atLeastOnce()).object2DRemoved(
+                eq(new Object2DRemovedEvent(w, obj))
+        );
 
         assertNull(obj.getWorld());
     }
