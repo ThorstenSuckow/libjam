@@ -36,6 +36,7 @@ public class SpriteTest {
 
         assertSame(obj, sp.getObject2D());
         assertNull(sp.getRenderer());
+        assertNull(sp.getImage());
 
         assertEquals(-1, sp.getMaxAge());
 
@@ -48,11 +49,9 @@ public class SpriteTest {
 
         Object2D obj = new Object2D(100, 200);
 
-
         Sprite sp = new Sprite(obj);
 
         assertNull(sp.getRenderer());
-
 
         // mock Graphics
         GraphicsContext g = mock(GraphicsContext.class);
@@ -83,6 +82,8 @@ public class SpriteTest {
         sp.drawNode(g);
 
         verify(g, atLeast(1)).drawImage(refEq(img), eq(sp.getX()), eq(sp.getY()));
+
+        assertSame(img, sp.getImage());
     }
 
 

@@ -112,6 +112,18 @@ public class Sprite extends GfxNode {
 
 
     /**
+     * Returns the WritableImage used by this Sprite. If this Sprite
+     * does not use a WritableImage, this method returns null.
+     *
+     * @return The WritableImage used by this Sprite, otherwise null if no such
+     * object exists.
+     */
+    public WritableImage getImage() {
+        return img;
+    }
+
+
+    /**
      * Returns the current LifecycleState of this Sprite.
      *
      * @return the LifecycleState of this Sprite.
