@@ -185,8 +185,6 @@ public class Object2DTest {
         Object2D o = new Object2D(0 ,0);
 
         assertTrue(o.createdAt() <= System.nanoTime());
-
-
     }
 
 }

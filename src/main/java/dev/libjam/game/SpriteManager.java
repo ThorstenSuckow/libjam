@@ -1,6 +1,10 @@
 package dev.libjam.game;
 
 import dev.libjam.physx.Object2D;
+import dev.libjam.physx.World2D;
+import dev.libjam.physx.event.Object2DAddedEvent;
+import dev.libjam.physx.event.Object2DRemovedEvent;
+import dev.libjam.physx.event.World2DEventListener;
 import javafx.beans.Observable;
 import javafx.beans.property.ReadOnlyObjectProperty;
 
@@ -10,11 +14,60 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class SpriteManager  {
 
-    List<PropertyChangeListener> propertyChangeListener = new ArrayList<>();
+/**
+ * Mediates information between physical objects and their representation as Sprites.
+ */
+public class SpriteManager  implements World2DEventListener {
 
-    HashMap<Object2D, Sprite> objToSprite = new HashMap<>();
+    private List<PropertyChangeListener> propertyChangeListener = new ArrayList<>();
+
+    private HashMap<Object2D, Sprite> objToSprite = new HashMap<>();
+
+    private SpriteLayer spriteLayer;
+
+    private SpriteRenderer renderer;
+
+
+    /**
+     *
+     * @param world
+     * @param rootSpriteLayer
+     * @param renderer
+     */
+    public SpriteManager(final World2D world, final SpriteLayer rootSpriteLayer, SpriteRenderer renderer) {
+        this.spriteLayer = rootSpriteLayer;
+        this.renderer = renderer;
+        world.addWorld2DEventListener(this);
+    }
+
+    /**
+     * Translates the position of the specified Object2D to coordinates used by the specified Sprite.
+     *
+     * @param object2D
+     * @param sprite
+     */
+    public void translateObject2DToSprite(Sprite sprite) {
+        Object2D obj = sprite.getObject2D();
+        sprite.setWidth(obj.getWidth());
+        sprite.setHeight(obj.getHeight());
+        sprite.setX(obj.getX());
+        sprite.setY(obj.getY());
+    }
+
+    @Override
+    public void object2DAdded(Object2DAddedEvent evt) {
+        Object2D obj = evt.getObject2D();
+        Sprite sp = new Sprite(obj, renderer);
+        translateObject2DToSprite(sp);
+        registerSprite(sp);
+        spriteLayer.add(sp);
+    }
+
+    @Override
+    public void object2DRemoved(Object2DRemovedEvent evt) {
+        unregisterSprite(objToSprite.get((Object2D)evt.getObject2D()));
+    }
 
     public void unregisterSprite(Sprite sp) {
         sp.getObject2D().removePropertyChangeListener(this::object2DPropertyChange);
@@ -28,7 +81,6 @@ public class SpriteManager  {
     }
 
     private void spriteLifecycleChange(final Observable observable, Object oldValue, Object newValue) {
-
         ReadOnlyObjectProperty<LifecycleState> lifecycleState = (ReadOnlyObjectProperty<LifecycleState>) observable;
 
         Sprite sprite = (Sprite)lifecycleState.getBean();
@@ -40,20 +92,13 @@ public class SpriteManager  {
 
 
     private void object2DPropertyChange(PropertyChangeEvent evt) {
-       // System.out.println(evt);
-        if (evt.getPropertyName() == "y") {
-            double y = (Double)evt.getNewValue();
 
-            System.out.println("y: " + y);
-            //objToSprite.get((Object2D)evt.getSource()).setY(y);
+        Sprite sp = objToSprite.get((Object2D)evt.getSource());
+
+        if (evt.getPropertyName() == "y" || evt.getPropertyName() == "x") {
+            translateObject2DToSprite(sp);
         }
 
-        if (evt.getPropertyName() == "x") {
-            double x = (Double)evt.getNewValue();
-
-            System.out.println("x: " + x);
-          //  objToSprite.get((Object2D)evt.getSource()).setX(x);
-        }
     }
 
 }

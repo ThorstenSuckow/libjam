@@ -2,10 +2,11 @@ package dev.libjam.demo.snowFall.game;
 
 import dev.libjam.game.Sprite;
 import dev.libjam.game.SpriteRenderer;
-import dev.libjam.gfx.drawable.DefaultGfxNode;
-import dev.libjam.gfx.drawable.GfxNode;
 import dev.libjam.physx.Object2D;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
 
 public class SnowFlakeRenderer implements SpriteRenderer {
 
@@ -15,60 +16,52 @@ public class SnowFlakeRenderer implements SpriteRenderer {
         this.snowFlakePool = snowFlakePool;
     }
 
-    private double computeOpacity(GfxNode node) {
+    private WritableImage computeOpacity(final Sprite sprite, final WritableImage img) {
 
-        Object2D obj = null;//((DefaultGfxNode)node).getObject2D();
-
-        if (obj == null) {
-            return 0;
-        }
+        Object2D obj = sprite.getObject2D();
 
         long age = (obj.getAge() / 1_000_000_000);
         //age = age > 0 ? age : 1;
 
         double opacity = age == 0 ? 1 : 1.0 - (age * 0.1d);
 
-        // aging should be probably in a separate thread?
-        //((SnowFlake)node).setBgColor(Color.rgb(200, 200, 200, Math.max(0, opacity)));// blue as a hex web value, explicit alpha)
+        PixelWriter pw = img.getPixelWriter();
 
-        return Math.max(0, opacity);
-    }
-
-
-   // @Override
-    public synchronized WritableImage render(GfxNode node) {
-
-        if (node.getWidth() == 0.0 || node.getHeight() == 0.0) {
-            return null;
-        }
-
-        double opacity = computeOpacity(node);
-
-        DefaultGfxNode dNode = (DefaultGfxNode)node;
-/*
-         if (dNode.img == null) {
-             dNode.img = new WritableImage((int)Math.ceil(node.getWidth()), (int)Math.ceil(node.getHeight()));
-        }
-
-        double width = dNode.img.getWidth();
-        double height = dNode.img.getHeight();
+        double width = img.getWidth();
+        double height = img.getHeight();
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                if (dNode.img != null) {
-                    dNode.img.getPixelWriter().setColor(i, j, Color.rgb(200, 200, 200, Math.max(0, opacity)));
+                if (img != null) {
+                   pw.setColor(i, j, Color.rgb(200, 200, 200, Math.max(0.2, opacity)));
                 }
             }
         }
 
-        return dNode.img;*/
+        // aging should be probably in a separate thread?
+        //((SnowFlake)node).setBgColor(Color.rgb(200, 200, 200, Math.max(0, opacity)));// blue as a hex web value, explicit alpha)
 
-        return snowFlakePool.get(3);
-
+        return img;
     }
 
 
+    int imgUsed = 0;
+
     @Override
-    public WritableImage render(Sprite sprite) {
-        return snowFlakePool.get(3);
+    public WritableImage render(final Sprite sprite) {
+
+        WritableImage img = sprite.getImage();
+
+        if (img == null) {
+            img = snowFlakePool.get(imgUsed++);
+            ImageView v = new ImageView(img);
+            v.setPreserveRatio(false);
+            v.setFitWidth(sprite.getWidth());
+            v.setFitHeight(sprite.getHeight());
+            img = v.snapshot(null, null);
+        } else {
+            img = computeOpacity(sprite, img);
+        }
+
+        return img;
     }
 }

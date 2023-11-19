@@ -20,7 +20,7 @@ class SnowFallController  {
 
     GfxRoot gfxRoot;
 
-    GfxParent gfxParent;
+    SpriteLayer gfxParent;
 
     SnowFlakeRenderer snowFlakeRenderer;
 
@@ -47,13 +47,12 @@ class SnowFallController  {
 
         snowFlakeRenderer = new SnowFlakeRenderer(snowFlakePool);
 
-
-        SpriteManager mng = new SpriteManager();
-
         gfxParent = new SpriteLayer(0, 0, gfxRoot.getWidth(), gfxRoot.getHeight());
         gfxRoot.add(gfxParent);
 
-        world.addObject(new SnowCloud(world.getWidth(), 0, mng, snowFlakeRenderer, gfxParent));
+        SpriteManager mng = new SpriteManager(world, gfxParent, snowFlakeRenderer);
+
+        world.addObject(new SnowCloud(world.getWidth(), 0));
     }
 
     private void createAnimation() {
@@ -70,7 +69,7 @@ class SnowFallController  {
                 long now = System.nanoTime();
 
 
-
+                world.updateObject(now);
                 world.updateWorld(now);
 
                 try {
