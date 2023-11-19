@@ -5,8 +5,6 @@ import dev.libjam.math.Vector2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -143,7 +141,7 @@ public class Object2D {
      *
      * @param x The desired x-coordinate of this Object2D relative to its owning world.
      */
-    public void setX(double x) {
+    public void setX(final double x) {
 
         double oldX = this.x;
         this.x = x;
