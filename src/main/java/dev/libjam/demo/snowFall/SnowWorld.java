@@ -21,10 +21,10 @@ public class SnowWorld extends World2D {
 
             Object2D obj = objects.get(i);
 
-           /* if (obj.getY() > (getHeight()- 40)  - obj.getHeight()) {
+            if (obj.getY() > (getHeight() - 40)  - obj.getHeight()) {
                 obj.setVelocity(0, 0);
                 obj.setY((getHeight() - 40) - obj.getHeight());
-            }*/
+            }
 
             updatePosition(obj, time);
 
@@ -46,13 +46,13 @@ public class SnowWorld extends World2D {
 
     }
 
-    int i = 0;
+
     private void updatePosition(Object2D obj, long time) {
         double x = obj.getVelocity().getX();
         double y = obj.getVelocity().getY();
 
-        obj.setX((obj.getX() + x) % getWidth());
-        obj.setY(i++);
+        obj.setX((obj.getX() + x));
+        obj.setY(obj.getY() + y);
     }
 
 }

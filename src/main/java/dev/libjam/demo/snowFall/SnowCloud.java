@@ -1,10 +1,6 @@
 package dev.libjam.demo.snowFall;
 
-import dev.libjam.demo.snowFall.game.SnowFlake;
-import dev.libjam.demo.snowFall.game.SnowFlakeRenderer;
 import dev.libjam.demo.snowFall.physx.SnowFlakeModel;
-import dev.libjam.game.SpriteManager;
-import dev.libjam.gfx.drawable.GfxParent;
 import dev.libjam.physx.Object2D;
 
 public class SnowCloud extends Object2D {
@@ -26,16 +22,15 @@ public class SnowCloud extends Object2D {
 
     public void updateObject(long time) {
 
-        int size = (int)(Math.random() * 18);
+        double size = (Math.random() * 10);
 
         if ((int)(Math.random() * 100) % 2 == 0) {
 
             SnowFlakeModel snowFlakeModel = new SnowFlakeModel(size, size);
 
             snowFlakeModel.setVelocity(0, 1);
-            System.out.println((Math.random() * getWidth()));
 
-            snowFlakeModel.setXY((Math.random() * getWidth()), 0);
+            snowFlakeModel.setXY(Math.random() * getWidth(), 0);
 
             getWorld().addObject(snowFlakeModel);
         }
