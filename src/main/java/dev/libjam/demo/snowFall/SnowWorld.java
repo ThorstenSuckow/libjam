@@ -16,17 +16,10 @@ public class SnowWorld extends World2D {
     @Override
     public void updateWorld(long time) {
 
-        for (int i = 0; i < objects.size(); i++) {
-            Object2D obj = objects.get(i);
-
-             obj.updateObject(time);
-        }
 
         for (int i = 0; i < objects.size(); i++) {
 
             Object2D obj = objects.get(i);
-
-           // obj.updateObject(time);
 
            /* if (obj.getY() > (getHeight()- 40)  - obj.getHeight()) {
                 obj.setVelocity(0, 0);
@@ -43,7 +36,6 @@ public class SnowWorld extends World2D {
 
     private void randomizeMovement(Object2D obj, long time) {
 
-
         /*long random = (long)((obj.getAge() / 1_000_000_000d) * 10) % 2;
 
         if (random == 0) {
@@ -54,13 +46,13 @@ public class SnowWorld extends World2D {
 
     }
 
+    int i = 0;
     private void updatePosition(Object2D obj, long time) {
         double x = obj.getVelocity().getX();
         double y = obj.getVelocity().getY();
 
-      //  obj.setX((obj.getX() + x) % getWidth());
-        obj.setY((obj.getY() + y));
-        System.out.println(obj.getX() + " " + obj.getY() + " " + getWidth() + " " + x + " " + y);
+        obj.setX((obj.getX() + x) % getWidth());
+        obj.setY(i++);
     }
 
 }

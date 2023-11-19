@@ -1,6 +1,10 @@
 package dev.libjam.game;
 
 import dev.libjam.physx.Object2D;
+import dev.libjam.physx.World2D;
+import dev.libjam.physx.event.Object2DAddedEvent;
+import dev.libjam.physx.event.Object2DRemovedEvent;
+import dev.libjam.physx.event.World2DEventListener;
 import javafx.beans.Observable;
 import javafx.beans.property.ReadOnlyObjectProperty;
 
@@ -10,11 +14,34 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class SpriteManager  {
+public class SpriteManager  implements World2DEventListener {
 
     List<PropertyChangeListener> propertyChangeListener = new ArrayList<>();
 
     HashMap<Object2D, Sprite> objToSprite = new HashMap<>();
+
+    SpriteLayer spriteLayer;
+
+    SpriteRenderer renderer;
+
+    public SpriteManager(final World2D world, final SpriteLayer rootSpriteLayer, SpriteRenderer renderer) {
+        this.spriteLayer = rootSpriteLayer;
+        this.renderer = renderer;
+        world.addWorld2DEventListener(this);
+    }
+
+
+    @Override
+    public void object2DAdded(Object2DAddedEvent evt) {
+        Sprite sp = new Sprite(evt.getObject2D(), renderer);
+        spriteLayer.add(sp);
+        registerSprite(sp);
+    }
+
+    @Override
+    public void object2DRemoved(Object2DRemovedEvent evt) {
+
+    }
 
     public void unregisterSprite(Sprite sp) {
         sp.getObject2D().removePropertyChangeListener(this::object2DPropertyChange);
@@ -28,7 +55,6 @@ public class SpriteManager  {
     }
 
     private void spriteLifecycleChange(final Observable observable, Object oldValue, Object newValue) {
-
         ReadOnlyObjectProperty<LifecycleState> lifecycleState = (ReadOnlyObjectProperty<LifecycleState>) observable;
 
         Sprite sprite = (Sprite)lifecycleState.getBean();
@@ -40,20 +66,19 @@ public class SpriteManager  {
 
 
     private void object2DPropertyChange(PropertyChangeEvent evt) {
-       // System.out.println(evt);
+
+        Sprite sp = objToSprite.get((Object2D)evt.getSource());
+        // System.out.println(evt);
         if (evt.getPropertyName() == "y") {
             double y = (Double)evt.getNewValue();
-
-            System.out.println("y: " + y);
-            //objToSprite.get((Object2D)evt.getSource()).setY(y);
+            sp.setY(y);
         }
 
         if (evt.getPropertyName() == "x") {
             double x = (Double)evt.getNewValue();
-
-            System.out.println("x: " + x);
-          //  objToSprite.get((Object2D)evt.getSource()).setX(x);
+            sp.setX(x);
         }
+
     }
 
 }

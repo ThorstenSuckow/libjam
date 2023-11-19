@@ -66,9 +66,20 @@ public class SnowFlakeRenderer implements SpriteRenderer {
 
     }
 
+    int imgUsed = 0;
 
     @Override
-    public WritableImage render(Sprite sprite) {
-        return snowFlakePool.get(3);
+    public WritableImage render(final Sprite sprite) {
+
+        WritableImage img = sprite.getImage();
+
+        if (img == null) {
+            System.out.println("Using img nr. " + imgUsed);
+            img = snowFlakePool.get(imgUsed++);
+        }
+
+        return img;
+
+
     }
 }
