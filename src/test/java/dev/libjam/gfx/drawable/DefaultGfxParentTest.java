@@ -10,6 +10,8 @@ import org.mockito.stubbing.Answer;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
@@ -71,8 +73,8 @@ public class DefaultGfxParentTest {
         DefaultGfxParent pSpy = spy(new DefaultGfxParent());
 
         // not visible
-        Assertions.assertTrue(pSpy.isVisible());
-        Assertions.assertTrue(pSpy.visibleProperty().get());
+        assertTrue(pSpy.isVisible());
+        assertTrue(pSpy.visibleProperty().get());
 
         pSpy.setVisible(false);
 
@@ -96,7 +98,7 @@ public class DefaultGfxParentTest {
         AtomicBoolean drawn = new AtomicBoolean(false);
         when(pSpy.drawNode(g)).thenAnswer((Answer) invocation -> {drawn.set(true); return null;});
         pSpy.draw(g);
-        Assertions.assertTrue(drawn.get());
+        assertTrue(drawn.get());
 
     }
 
@@ -109,7 +111,13 @@ public class DefaultGfxParentTest {
 
         DefaultGfxNode n = new DefaultGfxNode();
 
+        assertTrue(n.isVisible());
+
+        h1.setVisible(false);
+
         h1.add(n);
+
+        assertFalse(n.isVisible());
 
         Assertions.assertSame(h1, n.getParent());
 
@@ -140,8 +148,8 @@ public class DefaultGfxParentTest {
 
 
         Assertions.assertEquals(2, d1.getChildren().size());
-        Assertions.assertTrue(d1.getChildren().contains(d1_1));
-        Assertions.assertTrue(d1.getChildren().contains(d1_2));
+        assertTrue(d1.getChildren().contains(d1_1));
+        assertTrue(d1.getChildren().contains(d1_2));
 
     }
 

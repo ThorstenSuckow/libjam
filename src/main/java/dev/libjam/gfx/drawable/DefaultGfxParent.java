@@ -114,14 +114,4 @@ public class DefaultGfxParent extends GfxParent {
             + "]";
     }
 
-    @Override
-    public GfxParent add(final GfxNode node) throws IllegalArgumentException {
-        if (node.getParent() != null) {
-            throw new IllegalArgumentException();
-        }
-
-        node.setParent(this);
-        children.add(node);
-        return this;
-    }
 }
