@@ -1,5 +1,6 @@
 package dev.libjam.gfx.drawable;
 
+import javafx.beans.property.ReadOnlyListProperty;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import org.junit.jupiter.api.Assertions;
@@ -137,14 +138,14 @@ public class DefaultGfxParentTest {
 
         d.add(d1);
 
-        List<GfxNode> d1Nodes_1 = d1.getChildren();
+        ReadOnlyListProperty<GfxNode> d1Nodes_1 = d1.getChildren();
 
         d1.add(d1_1);
         d1.add(d1_2);
 
-        // make sure children returned is copy
-        List<GfxNode> d1Nodes_2 = d1.getChildren();
-        Assertions.assertNotSame(d1Nodes_1, d1Nodes_2);
+        // make sure children returned is same
+        ReadOnlyListProperty<GfxNode> d1Nodes_2 = d1.getChildren();
+        Assertions.assertSame(d1Nodes_1, d1Nodes_2);
 
 
         Assertions.assertEquals(2, d1.getChildren().size());
