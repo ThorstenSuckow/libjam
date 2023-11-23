@@ -1,7 +1,13 @@
 package dev.libjam.gfx.drawable;
 
+import javafx.beans.property.ReadOnlyListProperty;
+import javafx.beans.property.ReadOnlyListWrapper;
+import javafx.collections.FXCollections;
 import javafx.scene.canvas.GraphicsContext;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyVetoException;
+import java.beans.VetoableChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +17,8 @@ import java.util.List;
 public abstract class GfxParent extends GfxNode implements GfxDrawable, Parent {
 
     @SuppressWarnings("checkstyle:JavadocVariable")
-    protected List<GfxNode> children = new ArrayList<GfxNode>();
+    protected ReadOnlyListWrapper<GfxNode> children = new ReadOnlyListWrapper<>(FXCollections.observableArrayList());
+
 
     /**
      * Creates a new GfxDrawable with its height, width, x- and y-coordinate set to 0.
@@ -72,12 +79,12 @@ public abstract class GfxParent extends GfxNode implements GfxDrawable, Parent {
     }
 
     /**
-     * Returns a copy of the list of children maintained by this GfxParent.
+     * Returns the ReadOnlyListProperty of this children.
      *
-     * @return The list of GfxDrawables of this GfxDrawableParent.
+     * @return The list of GfxNodes maintained by this GfxParent.
      */
-    public List<GfxNode> getChildren() {
-        return new ArrayList<GfxNode>(children);
+    public ReadOnlyListProperty<GfxNode> getChildren() {
+        return children.getReadOnlyProperty();
     }
 
 
