@@ -1,7 +1,6 @@
-package dev.libjam.game;
+package dev.libjam.game2D;
 
 import dev.libjam.gfx.drawable.GfxNode;
-import dev.libjam.physx.Object2D;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.scene.canvas.GraphicsContext;
@@ -9,14 +8,14 @@ import javafx.scene.image.WritableImage;
 
 
 /**
- * A Sprite is a visual representation of an Object2D.
+ * A Sprite is a visual representation of an GameObject.
  * The initial LifecycleState of a Sprite is PREPARING.
  */
 @SuppressWarnings("checkstyle:LineLength")
 public class Sprite extends GfxNode {
 
     @SuppressWarnings("checkstyle:JavadocVariable")
-    private Object2D object2D;
+    private GameObject gameObject;
 
     @SuppressWarnings("checkstyle:JavadocVariable")
     private SpriteRenderer renderer;
@@ -27,43 +26,77 @@ public class Sprite extends GfxNode {
     @SuppressWarnings("checkstyle:JavadocVariable")
     private ReadOnlyObjectWrapper<LifecycleState> lifecycleState;
 
+    /**
+     * Package private constructor for testing.
+     */
+    Sprite() {
+        super();
+    };
 
     /**
-     * Creates a new Sprite representing the specified Object2D.
+     * Creates a new Sprite representing the specified GameObject.
      *
-     * @param object2D the specified Object2D this Sprite should represent.
+     * @param gameObject the specified GameObject this Sprite should represent.
      */
     @SuppressWarnings("checkstyle:HiddenField")
-    public Sprite(final Object2D object2D) {
-        this(object2D, null);
+    public Sprite(final GameObject gameObject) {
+        this(gameObject, null);
     }
 
 
     /**
-     * Creates a new Sprite representing the specified Object2D using
+     * Creates a new Sprite representing the specified GameObject using
      * the specified renderer
      *
-     * @param object2D The specified Object2D
+     * @param gameObject The specified GameObject
      * @param renderer The specified renderer.
      */
     @SuppressWarnings("checkstyle:HiddenField")
     public Sprite(
-            final Object2D object2D,
+            final GameObject gameObject,
             final SpriteRenderer renderer
     ) {
-        this.object2D = object2D;
+        this.setGameObject(gameObject);
         this.renderer = renderer;
         lifecycleState = new ReadOnlyObjectWrapper<>(this, "lifecycleState", LifecycleState.PREPARING);
     }
 
+    /**
+     * Sets the GameObject of this Sprite to the specified instance.
+     *
+     * @param gameObject the specified GameObject.
+     *
+     * @return the GameObject this Sprite represents.
+     *
+     * @throws IllegalArgumentException if the gameObject's Sprite has already been set and does not equal to
+     * this object
+     * @throws IllegalStateException or if this Sprite already has a GameObject and the specified GameObject
+     * does not reference the same object.
+     *
+     */
+    void setGameObject(final GameObject gameObject) throws IllegalArgumentException, IllegalStateException {
+
+        if (this.gameObject != null && this.gameObject != gameObject) {
+            throw new IllegalStateException();
+        }
+
+        if (gameObject.getSprite() != null && gameObject.getSprite() != this) {
+            throw new IllegalArgumentException();
+        }
+
+        this.gameObject = gameObject;
+        if (gameObject.getSprite() == null) {
+            this.gameObject.setSprite(this);
+        }
+    }
 
     /**
-     * Returns the Object2D this Sprite represents.
+     * Returns the GameObject this Sprite represents.
      *
-     * @return the Object2D this Sprite represents.
+     * @return the GameObject this Sprite represents.
      */
-    public Object2D getObject2D() {
-        return object2D;
+    public GameObject getGameObject() {
+        return gameObject;
     }
 
 
