@@ -5,6 +5,7 @@ import dev.libjam.gfx.drawable.DefaultGfxParent;
 import dev.libjam.gfx.drawable.GfxNode;
 import dev.libjam.gfx.drawable.GfxRoot;
 import dev.libjam.gfx.drawable.Parent;
+import javafx.beans.property.ReadOnlyListProperty;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,8 +60,8 @@ public class JavaFxCanvasTest {
         d1.add(d1_2);
 
         // make sure children returned is copy
-        List<GfxNode> d1Nodes_2 = d1.getChildren();
-        Assertions.assertNotSame(d1Nodes_1, d1Nodes_2);
+        ReadOnlyListProperty<GfxNode> d1Nodes_2 = d1.getChildren();
+        Assertions.assertSame(d1Nodes_1, d1Nodes_2);
 
 
         Assertions.assertEquals(2, d1.getChildren().size());

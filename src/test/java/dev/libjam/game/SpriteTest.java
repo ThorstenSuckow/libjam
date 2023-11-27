@@ -1,6 +1,7 @@
-package dev.libjam.game2D;
+package dev.libjam.game;
 
 import dev.libjam.gfx.drawable.GfxNode;
+import dev.libjam.physx.Object2D;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.WritableImage;
@@ -23,19 +24,17 @@ import static org.mockito.Mockito.verify;
 
 public class SpriteTest {
 
-
     @Test
     @DisplayName("Sprite")
     public void testSprite() {
 
-        GameObject gameObject = new GameObject(100, 200);
-        Sprite sp = new Sprite(gameObject);
+        Object2D obj = new Object2D(100, 200);
+
+        Sprite sp = new Sprite(obj);
 
         assertInstanceOf(GfxNode.class, sp);
 
-        assertSame(gameObject, sp.getGameObject());
-        assertSame(sp, sp.getGameObject().getSprite());
-
+        assertSame(obj, sp.getObject2D());
         assertNull(sp.getRenderer());
         assertNull(sp.getImage());
 
@@ -45,46 +44,12 @@ public class SpriteTest {
     }
 
     @Test
-    @DisplayName("Sprite constructor exception")
-    public void testSpriteConstructorException() {
-
-        GameObject gameObject = new GameObject(100, 200);
-        Sprite sp = new Sprite(gameObject);
-
-        assertThrowsExactly(IllegalArgumentException.class, () -> {
-            new Sprite(gameObject);
-        });
-    }
-
-
-    @Test
-    @DisplayName("setGameObject")
-    public void testSetGameObject() {
-
-        GameObject gameObject = new GameObject(100, 200);
-        Sprite sp = new Sprite();
-        Sprite sp2 = new Sprite();
-
-        sp.setGameObject(gameObject);
-
-        assertSame(gameObject, sp.getGameObject());
-
-        assertThrowsExactly(IllegalArgumentException.class, () -> {
-            sp2.setGameObject(gameObject);
-        });
-
-        assertThrowsExactly(IllegalStateException.class, () -> {
-            sp.setGameObject(new GameObject(100, 100));
-        });
-
-    }
-
-
-    @Test
     @DisplayName("draw - no renderer")
     public void testDrawWithoutRenderer() {
 
-        Sprite sp = new Sprite(new GameObject(100, 200));
+        Object2D obj = new Object2D(100, 200);
+
+        Sprite sp = new Sprite(obj);
 
         assertNull(sp.getRenderer());
 
@@ -104,8 +69,11 @@ public class SpriteTest {
     @DisplayName("draw - renderer")
     public void testDrawWithRenderer() {
 
+        Object2D obj = new Object2D(100, 200);
+
         WritableImage img = new WritableImage(10,10);
-        Sprite sp = new Sprite(new GameObject(100, 200), (Sprite sprite) -> img);
+
+        Sprite sp = new Sprite(obj, (Sprite sprite) -> img);
 
         assertNotNull(sp.getRenderer());
 
@@ -123,7 +91,8 @@ public class SpriteTest {
     @DisplayName("LifecycleProperty")
     public void testLifecycleProperty() {
 
-        Sprite sp = new Sprite(new GameObject(100, 200));
+        Object2D obj = new Object2D(100, 200);
+        Sprite sp = new Sprite(obj);
 
         assertInstanceOf(ReadOnlyObjectProperty.class, sp.lifecycleStateProperty());
 
@@ -139,7 +108,8 @@ public class SpriteTest {
     @DisplayName("setLifecycleState")
     public void testSetLifecycleState() {
 
-        Sprite sp = new Sprite(new GameObject(100, 200));
+        Object2D obj = new Object2D(100, 200);
+        Sprite sp = new Sprite(obj);
 
         sp.setLifecycleState(LifecycleState.SPAWNING);
         assertSame(LifecycleState.SPAWNING, sp.getLifecycleState());
