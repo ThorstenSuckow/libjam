@@ -38,7 +38,7 @@ public class Object2D {
      * @param width The width of this Object2D.
      * @param height The height of this Object2D.
      */
-    public Object2D(double width, double height) {
+    public Object2D(final double width, final double height) {
         this.x = 0;
         this.y = 0;
         velocity = new Vector2D(0, 0);
@@ -65,7 +65,7 @@ public class Object2D {
      *
      * @return The age of this Object2D in nanoseconds.
      */
-    public long getAge(long time) {
+    public long getAge(final long time) {
         return time - created;
     }
 
@@ -119,7 +119,7 @@ public class Object2D {
      * @param x The specified x-value
      * @param y The specified y-value
      */
-    public void setXY(double x, double y) {
+    public void setXY(final double x, final double y) {
         setX(x);
         setY(y);
     }
