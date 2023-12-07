@@ -48,7 +48,7 @@ public abstract class SpriteManagerBase implements World2DEventListener {
         Sprite sprite = getSprite(object2D);
         if (sprite == null) {
             sprite = new Sprite(object2D);
-            register(object2D, sprite);
+            register(sprite);
         }
         return sprite;
     }
