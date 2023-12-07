@@ -41,7 +41,7 @@ public abstract class World2D extends Object2D implements PropertyChangeListener
      * @param width the specified width of this World2D.
      * @param height the specified height of this World2D.
      */
-    public World2D(int width, int height) {
+    public World2D(final int width, final int height) {
         super(width, height);
         world = this;
         this.x = 0;
