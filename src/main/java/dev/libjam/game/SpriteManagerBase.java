@@ -38,7 +38,7 @@ public abstract class SpriteManagerBase implements World2DEventListener {
     /**
      * Creates a Sprite for the specified object2D and returns the sprite by also
      * registering the specified Object2D with this SpriteManager. If the specified
-     * Object2D is already managed by this SpriteManager, the owning Worite will be returned.
+     * Object2D is already managed by this SpriteManager, the owning Sprite will be returned.
      *
      * @param object2D The specified object2D for which the Sprite should get created.
      *
@@ -53,7 +53,6 @@ public abstract class SpriteManagerBase implements World2DEventListener {
         return sprite;
     }
 
-
     /**
      * Returns the Sprite for the specified object2D managed by this instance.
      * Returns null if the specified Object2D is not managed by this
@@ -67,29 +66,27 @@ public abstract class SpriteManagerBase implements World2DEventListener {
         return objToSprite.get(object2D);
     }
 
+
+
     /**
-     * Syncs the state of the Object2D with the state of the specified Sprite.
-     * State can be any information provided by the Object2D, such as positional
+     * Syncs the state of the Sprite with the owned GameObject.
+     * State can be any information provided by the GameObject, such as positional
      * information.
-     *
-     * @param object2D The specified Objects2D whose state must be reflected with the specified Sprite
-     * @param sprite The specified sprite whose state needs to by synced.
-     *
-     * @throws IllegalArgumentException if the specified object2D is not associated with the
-     * specified sprite.
+
+     * @param sprite The specified sprite.
      */
-    public abstract void sync(final Object2D object2D, final Sprite sprite) throws IllegalArgumentException;
+    public abstract void sync(final Sprite sprite);
 
 
     /**
-     * Registers the specified Sprite to make sure changes made to  Object2D-model are synced by this SpriteManager.
+     * Registers the specified Sprite to make sure changes made to its Object2D-model are synced by this SpriteManager.
      *
      * @param sprite The specified Sprite to register.
      */
-    protected void register(final Object2D object2D, final Sprite sprite) throws IllegalArgumentException {
-        if (sprite.getObject2D() != object2D) {
-            throw new IllegalArgumentException();
-        }
+    protected void register(final Sprite sprite) {
+
+        Object2D object2D = sprite.getObject2D();
+
         object2D.addPropertyChangeListener(this::object2DPropertyChange);
         sprite.lifecycleStateProperty().addListener(this::spriteLifecycleChange);
 
@@ -103,7 +100,7 @@ public abstract class SpriteManagerBase implements World2DEventListener {
      *
      * @param sp The specified Sprite to unregister.
      */
-    protected void unregister(final Object2D object2D, final Sprite sprite) throws IllegalArgumentException {
+    protected void unregister(final Sprite sprite) throws IllegalArgumentException {
         if (sprite.getObject2D() != object2D) {
             throw new IllegalArgumentException();
         }
@@ -117,9 +114,8 @@ public abstract class SpriteManagerBase implements World2DEventListener {
     public void object2DAdded(final Object2DAddedEvent evt) {
         Object2D obj = evt.getObject2D();
         Sprite sp = createSprite(obj);
-        sync(obj, sp);
-        register(sp);
         spriteLayer.add(sp);
+        sync(sp);
     }
 
 
@@ -145,7 +141,7 @@ public abstract class SpriteManagerBase implements World2DEventListener {
         if (evt.getPropertyName() == "y" || evt.getPropertyName() == "x") {
             Object2D object2D = (Object2D) evt.getSource();
             Sprite sp = objToSprite.get(object2D);
-            translate(object2D, sp);
+            sync(sp);
         }
 
     }
